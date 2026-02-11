@@ -282,17 +282,18 @@ const mockData = {
 
     // Job Bookings (งานจากลูกค้า)
     jobs: [
+        // --- Completed Jobs ---
         {
             jobId: 'J001',
             customerId: 'U001',
-            customerName: 'สมชาย ใจดี',
+            customerName: 'คุณสมชาย ใจดี',
             customerPhone: '081-234-5678',
             vehicleId: 'V001',
-            mechanicId: 'M001', // ช่างที่รับงานแล้ว
+            mechanicId: 'M001',
             serviceType: 'emergency',
-            symptoms: 'เครื่องยนต์ดับกะทันหัน มีเสียงผิดปกติจากเครื่อง ควันสีดำออกมา',
-            location: 'ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7563, lng: 100.5018 },
+            symptoms: 'เครื่องยนต์ดับกะทันหัน มีเสียงผิดปกติจากเครื่อง ควันสีดำออกมาสตาร์ทไม่ติด',
+            location: 'ปั๊ม ปตท. วิภาวดีรังสิต ขาออก',
+            locationGPS: { lat: 13.7850, lng: 100.5600 },
             status: 'completed',
             requestDate: '2026-02-05T08:30:00',
             acceptedDate: '2026-02-05T08:35:00',
@@ -310,43 +311,45 @@ const mockData = {
         },
         {
             jobId: 'J002',
-            customerId: 'U001',
-            customerName: 'สมชาย ใจดี',
-            customerPhone: '081-234-5678',
-            vehicleId: 'V001',
-            mechanicId: 'M002',
-            serviceType: 'emergency',
-            symptoms: 'แอร์ไม่เย็น คอมเพรสเซอร์ไม่ทำงาน',
-            location: 'ถนนพระราม 4 แขวงพระโขนง เขตคลองเตย กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7399, lng: 100.5607 },
-            status: 'completed',
-            requestDate: '2026-01-28T15:20:00',
-            acceptedDate: '2026-01-28T15:25:00',
-            completedDate: '2026-01-28T17:30:00',
-            scheduledDate: null,
-            images: [],
-            partsCost: 450,
-            laborCost: 1200,
-            totalCost: 1650,
-            mechanicNotes: 'เติมน้ำยาแอร์ ทำความสะอาดคอมเพรสเซอร์',
-            partsUsed: [
-                { name: 'น้ำยาแอร์ R134a', quantity: 1, price: 450 }
-            ]
-        },
-        {
-            jobId: 'J003',
             customerId: 'U002',
-            customerName: 'สมหญิง รักดี',
+            customerName: 'คุณสมหญิง รักสะอาด',
             customerPhone: '082-345-6789',
-            vehicleId: 'V003',
+            vehicleId: 'V005',
             mechanicId: 'M001',
             serviceType: 'emergency',
-            symptoms: 'ยางหน้าแตก ไม่สามารถขับต่อได้',
-            location: 'ถนนศรีนครินทร์ แขวงหนองบอน เขตประเวศ กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7165, lng: 100.6430 },
+            symptoms: 'ยางแบน มีตะปูตำที่ล้อหน้าขวา',
+            location: 'คอนโด The Base สุขุมวิท 77',
+            locationGPS: { lat: 13.7100, lng: 100.6000 },
+            status: 'completed',
+            requestDate: '2026-02-08T15:20:00',
+            acceptedDate: '2026-02-08T15:25:00',
+            completedDate: '2026-02-08T16:30:00',
+            scheduledDate: null,
+            images: [],
+            partsCost: 350,
+            laborCost: 500,
+            totalCost: 850,
+            mechanicNotes: 'ปะยางแบบสตรีม และเติมลมยางทุกล้อ',
+            partsUsed: [
+                { name: 'ค่าวัสดุปะยาง', quantity: 1, price: 350 }
+            ]
+        },
+
+        // --- In Progress Jobs ---
+        {
+            jobId: 'J003',
+            customerId: 'U003',
+            customerName: 'คุณประสิทธิ์ มั่งคั่ง',
+            customerPhone: '083-456-7890',
+            vehicleId: 'V006',
+            mechanicId: 'M001',
+            serviceType: 'emergency',
+            symptoms: 'รถสตาร์ทไม่ติด แบตเตอรี่น่าจะหมด (Honda Civic FD)',
+            location: 'ห้าง Central World ลานจอดรถชั้น B2',
+            locationGPS: { lat: 13.7460, lng: 100.5390 },
             status: 'in_progress',
-            requestDate: '2026-02-11T10:15:00',
-            acceptedDate: '2026-02-11T10:20:00',
+            requestDate: new Date(Date.now() - 3600000).toISOString(), // 1 ชม.ที่แล้ว
+            acceptedDate: new Date(Date.now() - 3000000).toISOString(),
             completedDate: null,
             scheduledDate: null,
             images: [],
@@ -356,19 +359,21 @@ const mockData = {
             mechanicNotes: null,
             partsUsed: []
         },
+
+        // --- Pending Jobs (Waiting for acceptance) ---
         {
             jobId: 'J004',
-            customerId: 'U003',
-            customerName: 'วิชัย มั่นคง',
-            customerPhone: '083-456-7890',
-            vehicleId: 'V005',
+            customerId: 'U004',
+            customerName: 'คุณวิไล ละเอียด',
+            customerPhone: '084-567-8901',
+            vehicleId: 'V008',
             mechanicId: null, // ยังไม่มีช่างรับ
             serviceType: 'emergency',
-            symptoms: 'แบตเตอรี่หมด รถสตาร์ทไม่ติด',
-            location: 'ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7650, lng: 100.5380 },
+            symptoms: 'ความร้อนขึ้นสูง มีควันพุ่งจากฝากระโปรง',
+            location: 'แยกอโศก-เพชรบุรี',
+            locationGPS: { lat: 13.7490, lng: 100.5630 },
             status: 'pending',
-            requestDate: '2026-02-11T20:30:00',
+            requestDate: new Date(Date.now() - 900000).toISOString(), // 15 นาทีที่แล้ว
             acceptedDate: null,
             completedDate: null,
             scheduledDate: null,
@@ -381,20 +386,20 @@ const mockData = {
         },
         {
             jobId: 'J005',
-            customerId: 'U004',
-            customerName: 'กมล สวยงาม',
-            customerPhone: '084-567-8901',
-            vehicleId: 'V006',
+            customerId: 'U005',
+            customerName: 'คุณธนา พูนทรัพย์',
+            customerPhone: '085-678-9012',
+            vehicleId: 'V009',
             mechanicId: null,
             serviceType: 'scheduled',
-            symptoms: 'ต้องการเปลี่ยนถ่ายน้ำมันเครื่อง ตามระยะ',
-            location: 'ซอยสุขุมวิท 71 แขวงพระโขนงเหนือ เขตวัฒนา กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7278, lng: 100.5930 },
+            symptoms: 'เช็คระยะ 100,000 กม. เปลี่ยนน้ำมันเครื่องและไส้กรอง',
+            location: 'หมู่บ้านนันทวัน บางนา กม.7',
+            locationGPS: { lat: 13.6300, lng: 100.6800 },
             status: 'pending',
-            requestDate: '2026-02-11T09:00:00',
+            requestDate: new Date(Date.now() - 7200000).toISOString(), // 2 ชม.ที่แล้ว
             acceptedDate: null,
             completedDate: null,
-            scheduledDate: '2026-02-12T10:00:00',
+            scheduledDate: new Date(Date.now() + 86400000).toISOString(), // พรุ่งนี้
             images: [],
             partsCost: null,
             laborCost: null,
@@ -404,17 +409,17 @@ const mockData = {
         },
         {
             jobId: 'J006',
-            customerId: 'U001',
-            customerName: 'สมชาย ใจดี',
-            customerPhone: '081-234-5678',
-            vehicleId: 'V002',
+            customerId: 'U002',
+            customerName: 'คุณสมหญิง รักสะอาด',
+            customerPhone: '082-345-6789',
+            vehicleId: 'V005',
             mechanicId: null,
             serviceType: 'emergency',
-            symptoms: 'เบรกไม่อยู่ มีเสียงดังจากล้อ',
-            location: 'ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพมหานคร',
-            locationGPS: { lat: 13.7604, lng: 100.5678 },
+            symptoms: 'เบรกแล้วมีเสียงดังเอี๊ยดๆ น่าจะเป็นที่ผ้าเบรก',
+            location: 'ตลาดนัดจตุจักร ประตู 1',
+            locationGPS: { lat: 13.8000, lng: 100.5500 },
             status: 'pending',
-            requestDate: '2026-02-11T21:00:00',
+            requestDate: new Date(Date.now() - 1800000).toISOString(), // 30 นาทีที่แล้ว
             acceptedDate: null,
             completedDate: null,
             scheduledDate: null,
@@ -2203,6 +2208,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize theme
     initializeTheme();
+
+    // Mobile Dropdown Logic
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        const link = item.querySelector('.navbar-link');
+        const dropdown = item.querySelector('.dropdown-menu');
+        if (link && dropdown) {
+            link.addEventListener('click', (e) => {
+                if (window.innerWidth <= 992) {
+                    e.preventDefault(); // Prevent navigation for dropdown toggles on mobile
+                    item.classList.toggle('active-mobile');
+                }
+            });
+        }
+    });
 });
 
 // ========================================

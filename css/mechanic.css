@@ -1,0 +1,467 @@
+/* ========================================
+   Mechanic Dashboard - Modern & Minimal Design System
+   ======================================== */
+
+:root {
+    /* --- Modern Color Palette --- */
+    /* Primary: Royal Blue (Trust, Professional) */
+    --primary-main: #2563EB;
+    --primary-hover: #1D4ED8;
+    --primary-light: #EFF6FF;
+    /* Background for active items */
+
+    /* Secondary: Clean Greys */
+    --bg-body: #F3F4F6;
+    /* Light Grey Background */
+    --bg-surface: #FFFFFF;
+    /* White Cards */
+    --border-light: #E5E7EB;
+    /* Subtle Divider */
+
+    /* Text: High Contrast */
+    --text-primary: #111827;
+    /* Almost Black - Headings */
+    --text-secondary: #4B5563;
+    /* Dark Grey - Body */
+    --text-tertiary: #9CA3AF;
+    /* Muted - Timestamps (only when not critical) */
+
+    /* Status Colors (Soft & Clear) */
+    --status-success-bg: #ECFDF5;
+    --status-success-text: #059669;
+    --status-warning-bg: #FFFBEB;
+    --status-warning-text: #D97706;
+    --status-error-bg: #FEF2F2;
+    --status-error-text: #DC2626;
+
+    /* Spacing & Layout */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 99px;
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* Animation */
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+    --bg-body: #111827;
+    /* Dark Background */
+    --bg-surface: #1F2937;
+    /* Dark Surface */
+    --border-light: #374151;
+    /* Dark Border */
+
+    --text-primary: #F9FAFB;
+    /* White Text */
+    --text-secondary: #D1D5DB;
+    /* Light Grey Text */
+    --text-tertiary: #9CA3AF;
+    /* Muted Text */
+
+    --primary-light: #1E3A8A;
+    /* Darker Blue Background */
+}
+
+/* ========================================
+   Base & Typography (Sarabun)
+   ======================================== */
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: 'Sarabun', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-primary);
+    font-weight: 700;
+    /* Bold Headings */
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+    /* Modern tight spacing */
+}
+
+h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Strong Text Override */
+strong,
+b {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+/* ========================================
+   Layout & Grid Scale
+   ======================================== */
+
+.container {
+    max-width: 100%;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+        /* Tablet optimized */
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+        /* Desktop optimized */
+    }
+}
+
+/* Grid System */
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 640px) {
+
+    .grid-2,
+    .grid-3 {
+        grid-template-columns: 1fr;
+        /* Stack on mobile */
+    }
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.gap-3 {
+    gap: 0.75rem;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+/* ========================================
+   Component: Cards (Minimal)
+   ======================================== */
+
+.job-card,
+.stat-card {
+    background-color: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    padding: 1.25rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.job-card:hover,
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Stat Card Specifics - Clean Look */
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-title {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--primary-main);
+    /* Pop color */
+    line-height: 1;
+}
+
+/* Highlighted Stat Card (e.g., Total Earnings) */
+.stat-card.highlight {
+    background: var(--primary-main);
+    border-color: var(--primary-main);
+}
+
+.stat-card.highlight .stat-title {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.stat-card.highlight .stat-value {
+    color: #FFFFFF;
+}
+
+/* ========================================
+   Component: Job Card Content
+   ======================================== */
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.job-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+}
+
+.badge-emergency {
+    background-color: var(--status-error-bg);
+    color: var(--status-error-text);
+}
+
+.badge-appointment {
+    background-color: var(--primary-light);
+    color: var(--primary-main);
+}
+
+.vehicle-info {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.license-plate {
+    display: inline-block;
+    background-color: var(--bg-body);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.symptom-box {
+    background-color: var(--bg-body);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    border-left: 4px solid var(--primary-main);
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.customer-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.customer-row i,
+.customer-row span.icon {
+    color: var(--primary-main);
+    /* Icon color */
+    width: 20px;
+    text-align: center;
+}
+
+/* ========================================
+   Component: Buttons (Modern Pill)
+   ======================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    outline: none;
+    text-decoration: none;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-action-primary {
+    background-color: var(--primary-main);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    /* Colored Shadow */
+}
+
+.btn-action-primary:hover {
+    background-color: var(--primary-hover);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.btn-action-outline {
+    background-color: transparent;
+    border: 1px solid var(--status-error-text);
+    color: var(--status-error-text);
+}
+
+.btn-action-outline:hover {
+    background-color: var(--status-error-bg);
+}
+
+.btn-secondary {
+    background-color: var(--bg-body);
+    color: var(--text-secondary);
+}
+
+.btn-success {
+    background-color: var(--status-success-text);
+    color: #FFFFFF;
+}
+
+/* ========================================
+   Component: Form Elements
+   ======================================== */
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background-color: var(--bg-body);
+    border: 1px solid transparent;
+    /* No border by default for minimal look */
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    background-color: var(--bg-surface);
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+/* High Contrast Override for Forms - Ensure readability */
+.form-control {
+    border: 1px solid #D1D5DB;
+    /* Subtle border for definition */
+}
+
+[data-theme="dark"] .form-control {
+    background-color: #1F2937;
+    border-color: #374151;
+    color: #F9FAFB;
+}
+
+/* ========================================
+   Component: Scrollable Tabs
+   ======================================== */
+
+.filter-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    scrollbar-width: none;
+}
+
+.filter-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-tab {
+    white-space: nowrap;
+    padding: 0.5rem 1.25rem;
+    background-color: var(--bg-surface);
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-light);
+    transition: var(--transition);
+}
+
+.filter-tab.active {
+    background-color: var(--primary-main);
+    color: #FFFFFF;
+    border-color: var(--primary-main);
+    box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   High Contrast / Accessibility Overrides
+   Always ensure text is visible
+   ======================================== */
+.job-card * {
+    opacity: 1 !important;
+}

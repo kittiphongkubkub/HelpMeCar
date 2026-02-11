@@ -5,18 +5,33 @@
 let currentMechanic = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize App State
+    if (typeof appState !== 'undefined') {
+        appState.init();
+    }
+
     // Get current mechanic from appState
     // For demo, we'll use M001 (สมศักดิ์ ช่างฝีมือ)
     const mechanicId = localStorage.getItem('helpmecar_current_mechanic') || 'M001';
     currentMechanic = mockData.mechanics.find(m => m.mechanicId === mechanicId);
 
+    // If still not found (e.g. fresh load), default to M001
     if (!currentMechanic) {
-        window.location.href = '../pages/login.html';
+        console.warn('Mechanic not found, defaulting to M001');
+        currentMechanic = mockData.mechanics.find(m => m.mechanicId === 'M001');
+    }
+
+    if (!currentMechanic) {
+        // Should not happen with mock data
+        alert('Data Error: Mechanic not found');
         return;
     }
 
     // Display mechanic name
-    document.getElementById('mechanicName').textContent = currentMechanic.name;
+    const mechanicNameEl = document.getElementById('mechanicName');
+    if (mechanicNameEl) {
+        mechanicNameEl.textContent = currentMechanic.name;
+    }
 
     // Load stats
     loadStats();
@@ -69,7 +84,11 @@ function loadPendingJobs() {
     const container = document.getElementById('pendingJobsList');
 
     if (pendingJobs.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center">ไม่มีงานใหม่ในขณะนี้</p>';
+        container.innerHTML = `
+            <div class="text-center py-5 text-muted bg-white rounded-lg shadow-sm">
+                <p>ไม่มีงานใหม่ในขณะนี้</p>
+                <small>งานใหม่จะปรากฏที่นี่เมื่อลูกค้าแจ้งซ่อม</small>
+            </div>`;
         return;
     }
 
@@ -78,44 +97,43 @@ function loadPendingJobs() {
         const isEmergency = job.serviceType === 'emergency';
 
         return `
-            <div class="card mb-3" style="border-left: 4px solid ${isEmergency ? 'var(--danger)' : 'var(--steel-blue)'};">
+            <div class="job-card">
                 <div class="card-body">
-                    <div class="flex-between mb-2">
-                        <div>
-                            <h4>${isEmergency ? '🚨 ฉุกเฉิน' : '📅 นัดหมาย'}</h4>
-                            <p class="text-muted mb-0">Job ID: ${job.jobId}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-muted mb-0">${utils.formatDate(job.requestDate)}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-2 gap-3 mb-3">
-                        <div>
-                            <p class="text-muted mb-1"><strong>👤 ลูกค้า:</strong></p>
-                            <p class="mb-0">${job.customerName}</p>
-                            <p class="text-muted mb-0">📞 ${job.customerPhone}</p>
-                        </div>
-                        <div>
-                            <p class="text-muted mb-1"><strong>🚗 รถ:</strong></p>
-                            <p class="mb-0">${vehicle ? `${vehicle.make} ${vehicle.model}` : '-'}</p>
-                            <p class="text-muted mb-0">${vehicle ? vehicle.licensePlate : '-'}</p>
+                    <div class="job-header">
+                        <span class="job-badge ${isEmergency ? 'badge-emergency' : 'badge-appointment'}">
+                            ${isEmergency ? '🚨 ฉุกเฉิน' : '📅 นัดหมาย'}
+                        </span>
+                        <div class="text-end">
+                            <small class="text-muted d-block" style="font-size: 0.8rem;">
+                                ${utils.formatDate(job.requestDate)}
+                            </small>
+                            <span class="text-warning" style="font-size: 0.8rem;">⏳ รอรับงาน</span>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <p class="text-muted mb-1"><strong>⚠️ ปัญหา:</strong></p>
-                        <p class="mb-0">${job.symptoms}</p>
+                    <div class="job-body">
+                        <div class="mb-2">
+                             <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h3 class="vehicle-info mb-0">${vehicle ? `${vehicle.make} ${vehicle.model}` : 'รถยนต์'}</h3>
+                                <span class="license-plate ms-2">${vehicle ? vehicle.licensePlate : '-'}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="symptom-box">
+                            <strong>อาการ:</strong> ${job.symptoms}
+                        </div>
+
+                        <div class="customer-row">
+                            <span>👤</span> ${job.customerName} (${job.customerPhone})
+                        </div>
+                         <div class="customer-row">
+                            <span>📍</span> <span class="text-truncate">${job.location}</span>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <p class="text-muted mb-1"><strong>📍 สถานที่:</strong></p>
-                        <p class="mb-0">${job.location}</p>
-                    </div>
-
-                    <div class="flex-between">
-                        <button class="btn btn-outline" onclick="rejectJob('${job.jobId}')">ปฏิเสธ</button>
-                        <button class="btn btn-primary" onclick="acceptJob('${job.jobId}')">รับงาน</button>
+                    <div class="job-footer d-flex gap-2">
+                         <button class="btn btn-action-primary flex-grow-1" onclick="acceptJob('${job.jobId}')">รับงาน</button>
+                         <button class="btn btn-action-outline flex-grow-1" onclick="rejectJob('${job.jobId}')">ปฏิเสธ</button>
                     </div>
                 </div>
             </div>
@@ -135,45 +153,51 @@ function loadActiveJobs() {
     const container = document.getElementById('activeJobsList');
 
     if (activeJobs.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center">ไม่มีงานที่กำลังทำในขณะนี้</p>';
+        container.innerHTML = `
+            <div class="text-center py-5 text-muted bg-white rounded-lg shadow-sm">
+                <p>ไม่มีงานที่กำลังทำในขณะนี้</p>
+            </div>`;
         return;
     }
 
     container.innerHTML = activeJobs.map(job => {
         const vehicle = mockData.vehicles.find(v => v.vehicleId === job.vehicleId);
+        const statusText = job.status === 'accepted' ? '👍 รับงานแล้ว' : '🔧 กำลังทำ';
+        const statusClass = job.status === 'accepted' ? 'text-primary' : 'text-info';
 
         return `
-            <div class="card mb-3" style="border-left: 4px solid var(--primary);">
+             <div class="job-card" style="border-left: 4px solid var(--primary-blue);">
                 <div class="card-body">
-                    <div class="flex-between mb-2">
-                        <div>
-                            <h4>Job #${job.jobId}</h4>
-                            <span class="badge" style="background: var(--primary);">${job.status === 'accepted' ? 'รับงานแล้ว' : 'กำลังทำ'}</span>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-muted mb-0">รับงาน: ${utils.formatDate(job.acceptedDate)}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-2 gap-3 mb-3">
-                        <div>
-                            <p class="text-muted mb-1"><strong>👤 ลูกค้า:</strong></p>
-                            <p class="mb-0">${job.customerName}</p>
-                        </div>
-                        <div>
-                            <p class="text-muted mb-1"><strong>🚗 รถ:</strong></p>
-                            <p class="mb-0">${vehicle ? `${vehicle.make} ${vehicle.model}` : '-'}</p>
+                    <div class="job-header">
+                        <span class="job-badge badge-appointment">Job #${job.jobId}</span>
+                        <div class="text-end">
+                            <span class="${statusClass}" style="font-weight: 600;">${statusText}</span>
+                             <small class="text-muted d-block" style="font-size: 0.8rem;">
+                                ${utils.formatDate(job.acceptedDate)}
+                            </small>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <p class="text-muted mb-1"><strong>⚠️ ปัญหา:</strong></p>
-                        <p class="mb-0">${job.symptoms}</p>
+                    <div class="job-body">
+                         <div class="mb-2">
+                            <span class="license-plate">${vehicle ? vehicle.licensePlate : '-'}</span>
+                            <h3 class="vehicle-info">${vehicle ? `${vehicle.make} ${vehicle.model}` : '-'}</h3>
+                        </div>
+                        
+                        <div class="symptom-box">
+                            <strong>อาการ:</strong> ${job.symptoms}
+                        </div>
+
+                        <div class="customer-row">
+                            <span>👤</span> ${job.customerName}
+                        </div>
                     </div>
 
-                    <div class="flex-between">
-                        <a href="mechanic-job-detail.html?jobId=${job.jobId}" class="btn btn-outline">รายละเอียด</a>
-                        <button class="btn btn-success" onclick="completeJob('${job.jobId}')">เสร็จสิ้น</button>
+                    <div class="job-footer d-flex gap-2">
+                        <a href="mechanic-job-detail.html?jobId=${job.jobId}" class="btn btn-secondary flex-grow-1" style="border-radius: 999px;">ดูรายละเอียด</a>
+                        ${job.status === 'in_progress' ?
+                `<button class="btn btn-success flex-grow-1" style="border-radius: 999px;" onclick="completeJob('${job.jobId}')">แจ้งซ่อมเสร็จ</button>`
+                : ''}
                     </div>
                 </div>
             </div>

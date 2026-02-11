@@ -7,6 +7,7 @@
     <meta name="description" content="รายละเอียดงาน - Dashboard ช่าง">
     <title>รายละเอียดงาน - HelpMeCar</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mechanic.css">
 </head>
 
 <body>
@@ -38,100 +39,110 @@
 
     <!-- Main Content -->
     <main class="container section">
-        <div class="mb-3">
-            <a href="mechanic-dashboard.html" class="btn btn-outline">← กลับ Dashboard</a>
+        <div class="mb-4">
+            <a href="#" onclick="history.back()" class="text-muted text-decoration-none">
+                <i class="fas fa-arrow-left"></i> ← กลับ
+            </a>
+            <div class="flex-between align-items-center mt-2">
+                <h1 class="mb-0" id="jobTitle" style="font-size: 1.5rem;">รายละเอียดงาน</h1>
+                <span id="currentStatusBadge"></span>
+            </div>
         </div>
 
-        <h1 class="mb-4" id="jobTitle">รายละเอียดงาน</h1>
-
         <!-- Job Status Timeline -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">📊 สถานะงาน</h3>
+        <div class="job-card mb-4 p-3">
+            <h3 class="h6 text-muted mb-3">สถานะการดำเนินงาน</h3>
+            <div id="statusTimeline" class="d-flex justify-content-between position-relative" style="overflow-x: auto;">
             </div>
-            <div class="card-body">
-                <div id="statusTimeline" class="mb-3"></div>
-                <div class="flex-between">
-                    <span id="currentStatus" class="badge"
-                        style="background: var(--primary); font-size: 1rem; padding: 0.5rem 1rem;"></span>
-                    <div id="statusActions"></div>
-                </div>
-            </div>
+            <div id="statusActions" class="mt-3 text-center"></div>
         </div>
 
         <!-- Customer & Vehicle Info -->
         <div class="grid grid-2 gap-3 mb-4">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">👤 ข้อมูลลูกค้า</h3>
+            <div class="job-card p-3">
+                <div class="d-flex align-items-center mb-3">
+                    <span style="font-size: 1.5rem; margin-right: 0.5rem;">👤</span>
+                    <h3 class="h6 mb-0">ข้อมูลลูกค้า</h3>
                 </div>
-                <div class="card-body" id="customerInfo"></div>
+                <div id="customerInfo"></div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">🚗 ข้อมูลรถ</h3>
+            <div class="job-card p-3">
+                <div class="d-flex align-items-center mb-3">
+                    <span style="font-size: 1.5rem; margin-right: 0.5rem;">🚗</span>
+                    <h3 class="h6 mb-0">ข้อมูลรถ</h3>
                 </div>
-                <div class="card-body" id="vehicleInfo"></div>
+                <div id="vehicleInfo"></div>
             </div>
         </div>
 
         <!-- Job Details -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">📋 รายละเอียดงาน</h3>
-            </div>
-            <div class="card-body" id="jobDetails"></div>
+        <div class="job-card mb-4 p-4">
+            <h3 class="h6 mb-3 border-bottom pb-2">📋 รายละเอียดแจ้งซ่อม</h3>
+            <div id="jobDetails"></div>
         </div>
 
         <!-- Service Form (only for in_progress) -->
-        <div class="card mb-4 d-none" id="serviceFormCard">
-            <div class="card-header">
-                <h3 class="card-title">🔧 บันทึกการซ่อม</h3>
+        <div class="job-card mb-4 d-none" id="serviceFormCard">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+                <h3 class="card-title text-primary">🔧 บันทึกการซ่อม</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form id="serviceForm">
                     <!-- Parts Used -->
-                    <div class="mb-3">
-                        <label class="form-label"><strong>อะไหล่ที่ใช้:</strong></label>
-                        <div id="partsList"></div>
-                        <button type="button" class="btn btn-outline mt-2" onclick="addPart()">+ เพิ่มอะไหล่</button>
+                    <div class="mb-4">
+                        <label class="form-label d-block mb-2"><strong>อะไหล่ที่ใช้</strong></label>
+                        <div id="partsList" class="d-flex flex-column gap-2"></div>
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-2 rounded-pill w-100"
+                            onclick="addPart()">+ เพิ่มรายการอะไหล่</button>
                     </div>
 
                     <!-- Labor Cost -->
-                    <div class="form-group">
-                        <label for="laborCost" class="form-label">ค่าแรง (บาท):</label>
-                        <input type="number" id="laborCost" class="form-control" value="0" min="0" step="100">
+                    <div class="form-group mb-4">
+                        <label for="laborCost" class="form-label">ค่าแรง (บาท)</label>
+                        <input type="number" id="laborCost" class="form-control rounded-pill" value="0" min="0"
+                            step="100">
                     </div>
 
                     <!-- Total Display -->
-                    <div class="mb-3">
-                        <p><strong>ค่าอะไหล่รวม:</strong> <span id="totalPartsCost">฿0</span></p>
-                        <p><strong>ค่าแรง:</strong> <span id="displayLaborCost">฿0</span></p>
-                        <h3 class="text-primary">รวมทั้งสิ้น: <span id="grandTotal">฿0</span></h3>
+                    <div class="mb-4 p-3 bg-light rounded-lg">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">ค่าอะไหล่รวม</span>
+                            <span id="totalPartsCost">฿0</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">ค่าแรง</span>
+                            <span id="displayLaborCost">฿0</span>
+                        </div>
+                        <div class="d-flex justify-content-between border-top pt-2">
+                            <strong class="text-primary">รวมทั้งสิ้น</strong>
+                            <strong class="text-primary h5 mb-0" id="grandTotal">฿0</strong>
+                        </div>
                     </div>
 
                     <!-- Notes -->
-                    <div class="form-group">
-                        <label for="mechanicNotes" class="form-label">หมายเหตุ/รายละเอียดการซ่อม:</label>
+                    <div class="form-group mb-4">
+                        <label for="mechanicNotes" class="form-label">หมายเหตุ/รายละเอียดการซ่อม</label>
                         <textarea id="mechanicNotes" class="form-control" rows="4"
-                            placeholder="บันทึกรายละเอียดการซ่อม..."></textarea>
+                            style="border-radius: var(--radius-md);" placeholder="บันทึกสิ่งที่ทำไป..."></textarea>
                     </div>
 
-                    <div class="flex-between">
-                        <button type="button" class="btn btn-outline" onclick="saveDraft()">บันทึกแบบร่าง</button>
-                        <button type="button" class="btn btn-success" onclick="completeJob()">✅
-                            ทำเครื่องหมายเสร็จสิ้น</button>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill"
+                            onclick="saveDraft()">บันทึกแบบร่าง</button>
+                        <button type="button" class="btn btn-success rounded-pill py-2" onclick="completeJob()">
+                            ✅ ยืนยันงานเสร็จสิ้น
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Completed Job Summary -->
-        <div class="card mb-4 d-none" id="completedSummary">
-            <div class="card-header">
-                <h3 class="card-title">✅ สรุปงานที่เสร็จแล้ว</h3>
+        <div class="job-card mb-4 d-none" id="completedSummary">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+                <h3 class="card-title text-success">✅ สรุปงานที่เสร็จแล้ว</h3>
             </div>
-            <div class="card-body" id="completedDetails"></div>
+            <div class="card-body p-4" id="completedDetails"></div>
         </div>
     </main>
 
@@ -271,12 +282,14 @@
         function addPart(name = '', qty = 1, price = 0) {
             partsCount++;
             const partHTML = `
-        <div class="grid grid-3 gap-2 mb-2" id="part${partsCount}">
-          <input type="text" class="form-control" placeholder="ชื่ออะไหล่" value="${name}" onchange="calculateTotal()">
-          <input type="number" class="form-control" placeholder="จำนวน" value="${qty}" min="1" onchange="calculateTotal()">
-          <div style="display: flex; gap: 0.5rem;">
-            <input type="number" class="form-control" placeholder="ราคา" value="${price}" min="0" onchange="calculateTotal()">
-            <button type="button" class="btn btn-outline" onclick="removePart(${partsCount})" style="padding: 0.5rem;">🗑️</button>
+        <div class="mb-2 p-2 bg-light rounded position-relative" id="part${partsCount}">
+          <div class="d-flex gap-2 mb-2">
+              <input type="text" class="form-control rounded-pill" placeholder="ชื่ออะไหล่" value="${name}" onchange="calculateTotal()" style="flex: 2;">
+              <button type="button" class="btn text-danger p-0" onclick="removePart(${partsCount})">🗑️</button>
+          </div>
+          <div class="d-flex gap-2">
+              <input type="number" class="form-control rounded-pill" placeholder="จำนวน" value="${qty}" min="1" onchange="calculateTotal()">
+              <input type="number" class="form-control rounded-pill" placeholder="ราคา/หน่วย" value="${price}" min="0" onchange="calculateTotal()">
           </div>
         </div>
       `;

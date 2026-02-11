@@ -7,6 +7,7 @@
     <meta name="description" content="แดชบอร์ดช่างซ่อมรถ - HelpMeCar">
     <title>Dashboard ช่าง - HelpMeCar</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mechanic.css">
 </head>
 
 <body>
@@ -39,57 +40,64 @@
     <!-- Main Content -->
     <main class="container section">
         <div class="flex-between mb-4">
-            <h1>🔧 Dashboard ช่างซ่อม</h1>
             <div>
-                <span id="mechanicName" class="text-muted"></span>
+                <h1 class="mb-0" style="font-size: 1.75rem;">🔧 Dashboard</h1>
+                <p class="text-muted mb-0" id="mechanicName">กำลังโหลด...</p>
+            </div>
+            <div class="text-end">
+                <span class="badge badge-appointment" style="font-size: 0.9rem;">ออนไลน์</span>
             </div>
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid grid-4 gap-3 mb-4">
-            <div class="card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white;">
+        <div class="grid grid-2 gap-3 mb-4">
+            <div class="stat-card bg-gradient-blue">
                 <div class="card-body">
-                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">งานวันนี้</p>
-                    <h2 style="color: white;" id="todayJobs">0</h2>
+                    <p class="stat-title">งานวันนี้</p>
+                    <h2 class="stat-value" id="todayJobs">0</h2>
                 </div>
             </div>
-            <div class="card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;">
+            <div class="stat-card bg-gradient-green">
                 <div class="card-body">
-                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">รายได้เดือนนี้</p>
-                    <h2 style="color: white;" id="monthlyEarnings">฿0</h2>
+                    <p class="stat-title">รายได้เดือนนี้</p>
+                    <h2 class="stat-value" id="monthlyEarnings">฿0</h2>
                 </div>
             </div>
-            <div class="card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;">
+            <div class="stat-card bg-gradient-orange">
                 <div class="card-body">
-                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">Rating</p>
-                    <h2 style="color: white;" id="mechanicRating">0.0 ⭐</h2>
+                    <p class="stat-title">Rating</p>
+                    <h2 class="stat-value" id="mechanicRating">0.0 ⭐</h2>
                 </div>
             </div>
-            <div class="card" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white;">
+            <div class="stat-card bg-gradient-purple">
                 <div class="card-body">
-                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">งานสำเร็จ</p>
-                    <h2 style="color: white;" id="completedJobs">0</h2>
+                    <p class="stat-title">งานสำเร็จ</p>
+                    <h2 class="stat-value" id="completedJobs">0</h2>
                 </div>
             </div>
         </div>
 
         <!-- New Job Requests -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">🆕 งานใหม่ที่รอรับ</h3>
+        <div class="mb-4">
+            <div class="flex-between mb-3">
+                <h3 class="h5 mb-0">🆕 งานใหม่ที่รอรับ</h3>
+                <a href="mechanic-jobs.html" class="text-muted" style="font-size: 0.9rem;">ดูทั้งหมด ></a>
             </div>
-            <div class="card-body">
-                <div id="pendingJobsList"></div>
+            <div id="pendingJobsList" class="grid grid-1 gap-3">
+                <!-- Javascript will populate this -->
+                <div class="text-center py-4 text-muted bg-white rounded-lg shadow-sm">
+                    <p>ไม่มีงานใหม่ในขณะนี้</p>
+                </div>
             </div>
         </div>
 
         <!-- Active Jobs -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">⚡ งานที่กำลังทำ</h3>
+        <div class="mb-4">
+            <div class="flex-between mb-3">
+                <h3 class="h5 mb-0">⚡ งานที่กำลังทำ</h3>
             </div>
-            <div class="card-body">
-                <div id="activeJobsList"></div>
+            <div id="activeJobsList" class="grid grid-1 gap-3">
+                <!-- Javascript will populate this -->
             </div>
         </div>
     </main>
