@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ดูประวัติการซ่อมรถ ค่าใช้จ่าย และรูปภาพก่อน-หลังซ่อม">
+  <title>ประวัติการซ่อม - FarMyKixFixMyCar</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="../index.html" class="navbar-brand">
+        🔧 HelpMeCar
+      </a>
+
+      <button class="navbar-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="navbar-menu">
+        <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+        <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+        <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
+        <li><a href="history.html" class="navbar-link active">ประวัติการซ่อม</a></li>
+        <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
+        <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
+        <li>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+            <span class="icon" id="themeIcon">🌙</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container section">
+    <div class="flex-between mb-3">
+      <h1>📜 ประวัติการซ่อมรถ</h1>
+      <button class="btn btn-primary" onclick="exportToPDF()">📄 ส่งออก PDF</button>
+    </div>
+
+    <!-- Vehicle Selector -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <label for="vehicleFilter" class="form-label" style="font-weight: 600; margin-bottom: 0.75rem;">🚗
+          เลือกรถที่ต้องการดูประวัติ:</label>
+        <select id="vehicleFilter" class="form-control" onchange="filterByVehicle()" style="max-width: 400px;">
+          <option value="all">ทั้งหมด (ทุกคัน)</option>
+        </select>
+        <p id="selectedVehicle" class="text-muted mt-2 mb-0"></p>
+      </div>
+    </div>
+
+    <!-- Expense Summary Cards -->
+    <div class="grid grid-3 mb-4">
+      <div class="card" style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); color: white;">
+        <div class="card-body text-center">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</div>
+          <p class="mb-1" style="color: white; font-weight: 600; font-size: 1.05rem;">ค่าใช้จ่ายทั้งหมด</p>
+          <h2 id="totalCost" class="mb-0" style="color: white; font-weight: 700;">฿0</h2>
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;">
+        <div class="card-body text-center">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔧</div>
+          <p class="mb-1" style="color: white; font-weight: 600; font-size: 1.05rem;">จำนวนครั้งที่ซ่อม</p>
+          <h2 id="serviceCount" class="mb-0" style="color: white; font-weight: 700;">0</h2>
+        </div>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;">
+        <div class="card-body text-center">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚙️</div>
+          <p class="mb-1" style="color: white; font-weight: 600; font-size: 1.05rem;">อะไหล่ที่ใช้</p>
+          <h2 id="partsUsedCount" class="mb-0" style="color: white; font-weight: 700;">0</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly/Yearly Toggle -->
+    <div class="card mb-4">
+      <div class="card-header flex-between">
+        <h3 class="card-title">📊 สรุปค่าใช้จ่าย</h3>
+        <div class="flex-center gap-2">
+          <button class="btn btn-sm btn-outline" id="monthlyBtn" onclick="showExpenseChart('monthly')">รายเดือน</button>
+          <button class="btn btn-sm btn-primary" id="yearlyBtn" onclick="showExpenseChart('yearly')">รายปี</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="expenseChart"
+          style="height: 200px; display: flex; align-items: center; justify-content: center; background: var(--bg-light); border-radius: var(--radius-md);">
+          <p class="text-muted">กราฟแสดงค่าใช้จ่าย (จำลอง)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Service History Timeline -->
+    <h2 class="mb-3">🕐 ไทม์ไลน์การซ่อม</h2>
+
+    <div id="serviceTimeline" class="timeline">
+      <!-- Timeline items will be populated here -->
+    </div>
+
+    <!-- No History Message -->
+    <div id="noHistory" class="text-center d-none" style="padding: 3rem 0;">
+      <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+      <h3 class="text-muted">ยังไม่มีประวัติการซ่อม</h3>
+      <p class="text-muted">เมื่อคุณใช้บริการ ประวัติจะแสดงที่นี่</p>
+    </div>
+  </main>
+
+  <!-- Service Detail Modal -->
+  <div id="serviceModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 id="modalServiceTitle">รายละเอียดการซ่อม</h3>
+        <button class="modal-close" onclick="modal.close('serviceModal')">×</button>
+      </div>
+      <div class="modal-body" id="modalServiceDetails">
+        <!-- Details will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="modal.close('serviceModal')">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/app.js"></script>
+  <script>
+    // ========================================
+    // Service History Logic
+    // ========================================
+
+    let currentVehicleId = null;
+    let serviceLogs = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set active nav link
+      navigation.setActiveLink('history.html');
+
+      // Setup modal
+      modal.setupCloseOnOutsideClick('serviceModal');
+
+      // Populate vehicle filter
+      populateVehicleFilter();
+
+      // Load history for all vehicles
+      loadHistory();
+    });
+
+    // ========================================
+    // Populate Vehicle Filter
+    // ========================================
+
+    function populateVehicleFilter() {
+      const filter = document.getElementById('vehicleFilter');
+      const userVehicles = appState.getUserVehicles();
+
+      // Add individual vehicles to dropdown
+      userVehicles.forEach(vehicle => {
+        const option = document.createElement('option');
+        option.value = vehicle.vehicleId;
+        option.textContent = `${vehicle.make} ${vehicle.model} (${vehicle.licensePlate})`;
+        filter.appendChild(option);
+      });
+    }
+
+    // ========================================
+    // Filter By Vehicle
+    // ========================================
+
+    function filterByVehicle() {
+      loadHistory();
+    }
+
+    // ========================================
+    // Load Service History
+    // ========================================
+
+    function loadHistory() {
+      console.log("Loading history...");
+
+      // Check appState initialization
+      if (!appState || !appState.isAuthenticated) {
+        console.error("App state not initialized or user not authenticated");
+        appState.init(); // Try to init if missing
+      }
+
+      // Get ALL logs for ALL user vehicles
+      const userVehicles = appState.getUserVehicles();
+      console.log("User Vehicles:", userVehicles);
+
+      if (!userVehicles || userVehicles.length === 0) {
+        console.warn("No vehicles found for user");
+        const noHistoryEl = document.getElementById('noHistory');
+        const timelineEl = document.getElementById('serviceTimeline');
+        if (noHistoryEl) noHistoryEl.classList.remove('d-none');
+        if (timelineEl) timelineEl.classList.add('d-none');
+        return;
+      }
+
+      const userVehicleIds = userVehicles.map(v => v.vehicleId);
+      const vehicleFilterEl = document.getElementById('vehicleFilter');
+      const selectedVehicleId = vehicleFilterEl ? vehicleFilterEl.value : 'all';
+
+      console.log("Selected Vehicle ID:", selectedVehicleId);
+
+      // Filter based on selected vehicle
+      if (selectedVehicleId === 'all') {
+        serviceLogs = mockData.maintenanceLogs
+          .filter(log => userVehicleIds.includes(log.vehicleId))
+          .sort((a, b) => new Date(b.serviceDate) - new Date(a.serviceDate));
+      } else {
+        serviceLogs = mockData.maintenanceLogs
+          .filter(log => log.vehicleId === selectedVehicleId)
+          .sort((a, b) => new Date(b.serviceDate) - new Date(a.serviceDate));
+      }
+
+      console.log("Found Service Logs:", serviceLogs.length);
+
+      const timelineEl = document.getElementById('serviceTimeline');
+      const noHistoryEl = document.getElementById('noHistory');
+
+      if (serviceLogs.length === 0) {
+        if (timelineEl) timelineEl.classList.add('d-none');
+        if (noHistoryEl) noHistoryEl.classList.remove('d-none');
+
+        // Reset summary
+        const totalCostEl = document.getElementById('totalCost');
+        const serviceCountEl = document.getElementById('serviceCount');
+        const partsUsedCountEl = document.getElementById('partsUsedCount');
+
+        if (totalCostEl) totalCostEl.textContent = utils.formatCurrency(0);
+        if (serviceCountEl) serviceCountEl.textContent = '0';
+        if (partsUsedCountEl) partsUsedCountEl.textContent = '0';
+        return;
+      }
+
+      if (timelineEl) timelineEl.classList.remove('d-none');
+      if (noHistoryEl) noHistoryEl.classList.add('d-none');
+
+      // Update summary
+      updateSummary();
+
+      // Render timeline
+      renderTimeline();
+
+      // Update vehicle display text
+      const selectedVehicleTextEl = document.getElementById('selectedVehicle');
+      if (selectedVehicleTextEl) {
+        if (selectedVehicleId === 'all') {
+          const vehicleNames = userVehicles.map(v => `${v.make} ${v.model}`).join(', ');
+          selectedVehicleTextEl.textContent = `ประวัติทั้งหมด (${userVehicles.length} คัน): ${vehicleNames}`;
+        } else {
+          const vehicle = mockData.vehicles.find(v => v.vehicleId === selectedVehicleId);
+          if (vehicle) {
+            selectedVehicleTextEl.textContent = `${vehicle.make} ${vehicle.model} (${vehicle.licensePlate})`;
+          }
+        }
+      }
+    }
+    // ========================================
+    // Update Summary
+    // ========================================
+
+    function updateSummary() {
+      const totalCost = serviceLogs.reduce((sum, log) => sum + log.totalCost, 0);
+      const serviceCount = serviceLogs.length;
+      // Count parts based on service types (estimate)
+      const partsUsedCount = serviceLogs.filter(log => log.partsCost > 0).length;
+
+      document.getElementById('totalCost').textContent = utils.formatCurrency(totalCost);
+      document.getElementById('serviceCount').textContent = serviceCount;
+      document.getElementById('partsUsedCount').textContent = partsUsedCount;
+    }
+
+    // ========================================
+    // Render Timeline
+    // ========================================
+
+    function renderTimeline() {
+      const timeline = document.getElementById('serviceTimeline');
+
+      timeline.innerHTML = serviceLogs.map((log, index) => {
+        const mechanic = mockData.mechanics.find(m => m.mechanicId === log.mechanicId);
+        const vehicle = mockData.vehicles.find(v => v.vehicleId === log.vehicleId);
+
+        return `
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <div class="flex-between mb-2">
+                <div>
+                  <span class="timeline-date">${utils.formatDate(log.serviceDate)}</span>
+                  <h4 class="mt-1 mb-1">${log.serviceType}</h4>
+                  ${vehicle ? `<p class="text-muted mb-0">🚗 ${vehicle.make} ${vehicle.model} (${vehicle.licensePlate})</p>` : ''}
+                  <p class="text-muted mb-0">👨‍🔧 โดย: ${mechanic ? mechanic.name : 'ไม่ทราบ'}</p>
+                </div>
+                <div class="text-right">
+                  <h3 class="text-primary mb-0">${utils.formatCurrency(log.totalCost)}</h3>
+                  <p class="text-muted mt-1 mb-0">📍 ${utils.formatNumber(log.mileageAtService)} กม.</p>
+                </div>
+              </div>
+              
+              <!-- Cost Breakdown -->
+              <div class="mb-3" style="background: var(--bg-light); padding: 0.75rem; border-radius: var(--radius-md);">
+                <strong>💰 รายการค่าใช้จ่าย:</strong>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                  <li>ค่าอะไหล่ = ${utils.formatCurrency(log.partsCost)}</li>
+                  <li>ค่าแรง = ${utils.formatCurrency(log.laborCost)}</li>
+                  <li><strong>รวมทั้งหมด = ${utils.formatCurrency(log.totalCost)}</strong></li>
+                </ul>
+              </div>
+              
+              <!-- Notes -->
+              ${log.notes ? `
+                <div class="mb-2">
+                  <strong>📝 บันทึก:</strong>
+                  <p class="text-muted mb-0 mt-1">${log.notes}</p>
+                </div>
+              ` : ''}
+              
+              <button class="btn btn-sm btn-outline mt-2" onclick="viewServiceDetails('${log.logId}')">
+                📄 ดูรายละเอียดเพิ่มเติม
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ========================================
+    // View Service Details
+    // ========================================
+
+    function viewServiceDetails(logId) {
+      const log = serviceLogs.find(l => l.logId === logId);
+      if (!log) return;
+
+      const mechanic = mockData.mechanics.find(m => m.mechanicId === log.mechanicId);
+      const vehicle = mockData.vehicles.find(v => v.vehicleId === log.vehicleId);
+
+      document.getElementById('modalServiceTitle').textContent = log.serviceType;
+
+      const detailsHtml = `
+        <div class="mb-3">
+          <h4>ข้อมูลทั่วไป</h4>
+          <table style="width: 100%; font-size: 0.95rem;">
+            <tr>
+              <td style="padding: 0.5rem 0; width: 40%;"><strong>วันที่ซ่อม:</strong></td>
+              <td>${utils.formatDate(log.serviceDate)}</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><strong>ช่าง:</strong></td>
+              <td>${mechanic ? mechanic.name : 'ไม่ทราบ'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><strong>รถยนต์:</strong></td>
+              <td>${vehicle ? `${vehicle.make} ${vehicle.model} (${vehicle.year})` : 'ไม่ทราบ'}</td>
+            </tr>
+            <tr>
+              <td style="padding: 0.5rem 0;"><strong>เลขไมล์:</strong></td>
+              <td>${utils.formatNumber(log.mileageAtService)} กม.</td>
+            </tr>
+          </table>
+        </div>
+        
+        <div class="mb-3">
+          <h4>รายการอะไหล่</h4>
+          <table style="width: 100%; font-size: 0.95rem;">
+            <thead>
+              <tr style="background: var(--bg-light);">
+                <th style="padding: 0.5rem; text-align: left;">รายการ</th>
+                <th style="padding: 0.5rem; text-align: center;">จำนวน</th>
+                <th style="padding: 0.5rem; text-align: right;">ราคา/หน่วย</th>
+                <th style="padding: 0.5rem; text-align: right;">รวม</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${log.partsUsed.map(part => `
+                <tr>
+                  <td style="padding: 0.5rem;">${part.name}</td>
+                  <td style="padding: 0.5rem; text-align: center;">${part.quantity}</td>
+                  <td style="padding: 0.5rem; text-align: right;">${utils.formatCurrency(part.unitPrice)}</td>
+                  <td style="padding: 0.5rem; text-align: right;">${utils.formatCurrency(part.totalPrice)}</td>
+                </tr>
+              `).join('')}
+              <tr style="border-top: 2px solid var(--bg-grey);">
+                <td colspan="3" style="padding: 0.5rem; text-align: right;"><strong>รวมค่าอะไหล่:</strong></td>
+                <td style="padding: 0.5rem; text-align: right;"><strong>${utils.formatCurrency(log.partsUsed.reduce((sum, p) => sum + p.totalPrice, 0))}</strong></td>
+              </tr>
+              <tr>
+                <td colspan="3" style="padding: 0.5rem; text-align: right;"><strong>ค่าแรง:</strong></td>
+                <td style="padding: 0.5rem; text-align: right;"><strong>${utils.formatCurrency(log.laborCost)}</strong></td>
+              </tr>
+              <tr style="background: var(--bg-light);">
+                <td colspan="3" style="padding: 0.5rem; text-align: right;"><strong>รวมทั้งหมด:</strong></td>
+                <td style="padding: 0.5rem; text-align: right;"><strong class="text-primary">${utils.formatCurrency(log.totalCost)}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        ${log.notes ? `
+          <div class="mb-3">
+            <h4>บันทึก</h4>
+            <p class="text-muted">${log.notes}</p>
+          </div>
+        ` : ''}
+      `;
+
+      document.getElementById('modalServiceDetails').innerHTML = detailsHtml;
+      modal.open('serviceModal');
+    }
+
+    // ========================================
+    // Export to PDF
+    // ========================================
+
+    function exportToPDF() {
+      if (serviceLogs.length === 0) {
+        utils.showNotification('ไม่มีข้อมูลที่จะส่งออก', 'error');
+        return;
+      }
+
+      utils.showNotification('กำลังสร้างไฟล์ PDF...', 'info');
+
+      // In production, this would generate a real PDF
+      setTimeout(() => {
+        utils.showNotification('ส่งออก PDF สำเร็จ! (จำลอง)', 'success');
+      }, 1500);
+    }
+
+    // ========================================
+    // Expense Chart (Mock)
+    // ========================================
+
+    function showExpenseChart(period) {
+      const monthlyBtn = document.getElementById('monthlyBtn');
+      const yearlyBtn = document.getElementById('yearlyBtn');
+
+      if (period === 'monthly') {
+        monthlyBtn.className = 'btn btn-sm btn-primary';
+        yearlyBtn.className = 'btn btn-sm btn-outline';
+      } else {
+        monthlyBtn.className = 'btn btn-sm btn-outline';
+        yearlyBtn.className = 'btn btn-sm btn-primary';
+      }
+
+      utils.showNotification(`แสดงข้อมูล${period === 'monthly' ? 'รายเดือน' : 'รายปี'}`, 'info');
+    }
+  </script>
+</body>
+
+</html>

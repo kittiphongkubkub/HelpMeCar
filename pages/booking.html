@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="จองช่างซ่อมรถฉุกเฉินหรือนัดหมายล่วงหน้า">
+    <title>จองบริการ - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu">
+                <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
+                <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
+                <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <h1 class="mb-3" id="pageTitle">📞 จองบริการซ่อมรถ</h1>
+
+        <!-- Service Type Selection -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">เลือกประเภทบริการ</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-2">
+                    <label class="card" id="emergencyCard"
+                        style="cursor: pointer; border: 2px solid var(--danger); background: linear-gradient(135deg, #FFF 0%, #FFE6E6 100%);">
+                        <input type="radio" name="serviceType" value="emergency" checked
+                            onchange="updateServiceType('emergency')" style="margin: 1rem;">
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem;">🚨</div>
+                            <h3 class="mb-2" style="color: var(--danger);">ฉุกเฉิน</h3>
+                            <p class="text-muted">ช่างจะมาถึงภายใน 30-60 นาที</p>
+                        </div>
+                    </label>
+
+                    <label class="card" id="scheduledCard" style="cursor: pointer;">
+                        <input type="radio" name="serviceType" value="scheduled"
+                            onchange="updateServiceType('scheduled')" style="margin: 1rem;">
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <div style="font-size: 3rem;">📅</div>
+                            <h3 class="mb-2">นัดหมายล่วงหน้า</h3>
+                            <p class="text-muted">เลือกวันและเวลาที่สะดวก</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <form id="bookingForm" onsubmit="handleBooking(event)">
+            <!-- Vehicle Selection -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">🚗 รถที่ต้องการซ่อม</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="vehicleSelect" class="form-label">เลือกรถยนต์</label>
+                        <select id="vehicleSelect" class="form-control" required>
+                            <!-- Will be populated -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem Description -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">📝 อาการและปัญหา</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="symptoms" class="form-label">อธิบายอาการหรือปัญหาที่พบ</label>
+                        <textarea id="symptoms" class="form-control" rows="4"
+                            placeholder="เช่น: เครื่องยนต์ดับกะทันหัน มีเสียงผิดปกติ แอร์ไม่เย็น..."
+                            required></textarea>
+                    </div>
+
+                    <!-- Photo/Video Upload with Image Optimizer -->
+                    <div class="form-group">
+                        <label class="form-label">อัปโหลดรูปภาพหรือวิดีโอ (ไม่จำเป็น)</label>
+                        <input type="file" id="problemImages" class="form-control" accept="image/*,video/*" multiple
+                            onchange="handleImageUpload(event)">
+                        <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">
+                            รองรับ JPG, PNG, WebP ขนาดไม่เกิน 2MB ต่อไฟล์
+                        </p>
+                    </div>
+
+                    <!-- Upload Preview -->
+                    <div id="uploadPreview"></div>
+                </div>
+            </div>
+
+            <!-- Date and Time (for scheduled only) -->
+            <div class="card mb-4 d-none" id="scheduleSection">
+                <div class="card-header">
+                    <h3 class="card-title">📅 วันและเวลาที่ต้องการ</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label for="scheduleDate" class="form-label">วันที่</label>
+                            <input type="date" id="scheduleDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleTime" class="form-label">เวลา</label>
+                            <input type="time" id="scheduleTime" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">📍 สถานที่</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="location" class="form-label">ที่อยู่</label>
+                        <textarea id="location" class="form-control" rows="3"
+                            placeholder="ที่อยู่ที่ต้องการให้ช่างมาซ่อม" required></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-outline" onclick="getCurrentLocation()">
+                        📍 ใช้ตำแหน่งปัจจุบัน (GPS)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mechanic Preference (Optional) -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">🔧 เลือกช่างซ่อม (ไม่บังคับ)</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="mechanicSelect" class="form-label">เลือกช่างที่ต้องการ</label>
+                        <select id="mechanicSelect" class="form-control">
+                            <option value="">ให้ระบบจับคู่ช่างที่เหมาะสมอัตโนมัติ</option>
+                            <!-- Will be populated -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="card mb-4" style="background: var(--bg-light);">
+                <div class="card-header">
+                    <h3 class="card-title">📋 สรุป</h3>
+                </div>
+                <div class="card-body">
+                    <p><strong>ประเภทบริการ:</strong> <span id="summaryType">ฉุกเฉิน</span></p>
+                    <p><strong>รถยนต์:</strong> <span id="summaryVehicle">-</span></p>
+                    <p><strong>ราคาเริ่มต้นโดยประมาณ:</strong> <span class="text-primary" id="summaryPrice">500-1,500
+                            บาท</span></p>
+                    <p class="mb-0" id="summarySchedule" class="d-none"><strong>วันและเวลา:</strong> <span
+                            id="summaryDateTime">-</span></p>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                    🚨 ยืนยันการเรียกช่างฉุกเฉิน
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/app.js"></script>
+    <script src="imageOptimizer.js"></script>
+    <script>
+        let serviceType = 'emergency';
+        let uploadedImages = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateVehicleSelect();
+            populateMechanicSelect();
+            updateSummary();
+        });
+
+        function populateVehicleSelect() {
+            const select = document.getElementById('vehicleSelect');
+            const vehicles = mockData.vehicles.filter(v => v.ownerId === appState.currentUser.userId);
+
+            select.innerHTML = vehicles.map(v =>
+                `<option value="${v.vehicleId}">${v.make} ${v.model} (${v.year}) - ${v.licensePlate}</option>`
+            ).join('');
+
+            select.addEventListener('change', updateSummary);
+            updateSummary();
+        }
+
+        function populateMechanicSelect() {
+            const select = document.getElementById('mechanicSelect');
+            const mechanics = mockData.mechanics.filter(m => m.available);
+
+            const options = mechanics.map(m =>
+                `<option value="${m.mechanicId}">${m.name} - ${utils.formatCurrency(m.startingPrice)} (${m.rating}⭐)</option>`
+            ).join('');
+
+            select.innerHTML = '<option value="">ให้ระบบจับคู่ช่างที่เหมาะสมอัตโนมัติ</option>' + options;
+        }
+
+        function updateServiceType(type) {
+            serviceType = type;
+            const scheduleSection = document.getElementById('scheduleSection');
+            const submitBtn = document.getElementById('submitBtn');
+            const emergencyCard = document.getElementById('emergencyCard');
+            const scheduledCard = document.getElementById('scheduledCard');
+
+            if (type === 'emergency') {
+                scheduleSection.classList.add('d-none');
+                document.getElementById('scheduleDate').required = false;
+                document.getElementById('scheduleTime').required = false;
+                submitBtn.innerHTML = '🚨 ยืนยันการเรียกช่างฉุกเฉิน';
+                emergencyCard.style.border = '2px solid var(--danger)';
+                scheduledCard.style.border = 'none';
+            } else {
+                scheduleSection.classList.remove('d-none');
+                document.getElementById('scheduleDate').required = true;
+                document.getElementById('scheduleTime').required = true;
+                submitBtn.innerHTML = '📅 ยืนยันการนัดหมาย';
+                emergencyCard.style.border = 'none';
+                scheduledCard.style.border = '2px solid var(--steel-blue)';
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            document.getElementById('summaryType').textContent = serviceType === 'emergency' ? 'ฉุกเฉิน' : 'นัดหมายล่วงหน้า';
+
+            const vehicleSelect = document.getElementById('vehicleSelect');
+            const selectedVehicle = mockData.vehicles.find(v => v.vehicleId === vehicleSelect.value);
+            if (selectedVehicle) {
+                document.getElementById('summaryVehicle').textContent =
+                    `${selectedVehicle.make} ${selectedVehicle.model} (${selectedVehicle.year})`;
+            }
+
+            if (serviceType === 'scheduled') {
+                document.getElementById('summarySchedule').classList.remove('d-none');
+                const date = document.getElementById('scheduleDate').value;
+                const time = document.getElementById('scheduleTime').value;
+                if (date && time) {
+                    document.getElementById('summaryDateTime').textContent = `${date} เวลา ${time} น.`;
+                }
+            } else {
+                document.getElementById('summarySchedule').classList.add('d-none');
+            }
+        }
+
+        async function handleImageUpload(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            const preview = document.getElementById('uploadPreview');
+            preview.innerHTML = '<p class="text-muted">กำลังประมวลผลรูปภาพ...</p>';
+
+            // Optimize images
+            const results = await imageOptimizer.optimizeMultiple(files, 'beforeAfter', (progress) => {
+                preview.innerHTML = `<p class="text-muted">กำลังประมวลผลรูปภาพ... ${progress}%</p>`;
+            });
+
+            // Display previews
+            let html = '';
+            results.forEach((result, index) => {
+                html += imageOptimizer.getPreviewHTML(result);
+                if (result.success) {
+                    uploadedImages.push(result);
+                }
+            });
+
+            preview.innerHTML = html;
+
+            if (uploadedImages.length > 0) {
+                utils.showNotification(`อัปโหลดรูปภาพ ${uploadedImages.length} ไฟล์สำเร็จ`, 'success');
+            }
+        }
+
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                utils.showNotification('เบราว์เซอร์ของคุณไม่รองรับ GPS', 'error');
+                return;
+            }
+
+            utils.showNotification('กำลังค้นหาตำแหน่ง...', 'info');
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    document.getElementById('location').value =
+                        `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n(ตำแหน่งปัจจุบัน - กรุณาเพิ่มรายละเอียดที่อยู่)`;
+                    utils.showNotification('ดึงตำแหน่งสำเร็จ!', 'success');
+                },
+                (error) => {
+                    utils.showNotification('ไม่สามารถดึงตำแหน่งได้: ' + error.message, 'error');
+                }
+            );
+        }
+
+        function handleBooking(event) {
+            event.preventDefault();
+
+            const formData = {
+                serviceType: serviceType,
+                vehicleId: document.getElementById('vehicleSelect').value,
+                symptoms: document.getElementById('symptoms').value,
+                location: document.getElementById('location').value,
+                mechanicId: document.getElementById('mechanicSelect').value || null,
+                scheduleDate: serviceType === 'scheduled' ? document.getElementById('scheduleDate').value : null,
+                scheduleTime: serviceType === 'scheduled' ? document.getElementById('scheduleTime').value : null,
+                images: uploadedImages
+            };
+
+            utils.showNotification('กำลังส่งคำขอ...', 'info');
+
+            // Simulate booking process
+            setTimeout(() => {
+                utils.showNotification(
+                    serviceType === 'emergency'
+                        ? 'ส่งคำขอสำเร็จ! ช่างจะติดต่อกลับภายใน 5-10 นาที'
+                        : 'นัดหมายสำเร็จ! เราจะแจ้งเตือนก่อนถึงเวลานัดหมาย',
+                    'success'
+                );
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>

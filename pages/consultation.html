@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ปรึกษาผู้เชี่ยวชาญ AI 'Slate' วินิจฉัยปัญหารถและประเมินราคา">
+    <title>ปรึกษาผู้เชี่ยวชาญ - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu">
+                <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
+                <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
+                <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="consultation.html" class="navbar-link active">ปรึกษาผู้เชี่ยวชาญ</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <!-- Premium Feature Header -->
+        <div class="card mb-4" style="background: linear-gradient(135deg, #1F2937 0%, #1E3A8A 100%); color: white;">
+            <div class="card-body">
+                <div class="flex-between">
+                    <div>
+                        <h1 style="color: white; margin-bottom: 0.5rem; font-weight: 700;">💬 Slate - ผู้เชี่ยวชาญ AI
+                        </h1>
+                        <p style="color: white; margin: 0; font-weight: 600; font-size: 1.05rem;">ช่างซ่อมรถ AI
+                            ที่พร้อมช่วยวินิจฉัยปัญหาและให้คำปรึกษา 24/7
+                        </p>
+                    </div>
+                    <span class="badge"
+                        style="background: gold; color: #000; font-size: 1rem; padding: 0.5rem 1rem; font-weight: 700;">⭐
+                        PREMIUM</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="card" style="height: 600px; display: flex; flex-direction: column;">
+            <!-- Chat Header -->
+            <div class="card-header"
+                style="background: var(--slate-blue); color: white; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
+                <div class="flex-between">
+                    <div class="flex-center gap-2">
+                        <div
+                            style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🤖
+                        </div>
+                        <div>
+                            <strong style="display: block;">Slate</strong>
+                            <span style="font-size: 0.875rem; opacity: 0.9;">ผู้เชี่ยวชาญ AI • ออนไลน์</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: white;"
+                        onclick="clearChat()">
+                        🗑️ ล้างแชท
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="card-body" id="chatMessages" style="flex: 1; overflow-y: auto; padding: 1.5rem;">
+                <!-- Welcome message -->
+                <div class="chat-message ai-message">
+                    <div class="message-bubble"
+                        style="background: var(--bg-light); padding: 1rem; border-radius: var(--radius-md); max-width: 80%; margin-bottom: 1rem;">
+                        <strong style="color: var(--slate-blue);">Slate</strong>
+                        <p style="margin: 0.5rem 0 0 0;">สวัสดีครับ! ผม Slate ผู้เชี่ยวชาญด้านยานยนต์ที่มีประสบการณ์กว่า
+                            25 ปี ผมพร้อมช่วยวินิจฉัยปัญหารถของคุณ 🚗</p>
+                        <p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.875rem;">
+                            ผมสามารถ:<br>
+                            ✓ วิเคราะห์อาการผิดปกติของรถ<br>
+                            ✓ ประเมินราคาซ่อมโดยประมาณ<br>
+                            ✓ แนะนำขั้นตอนแก้ไขเบื้องต้น<br>
+                            ✓ วิเคราะห์รูปภาพและวิดีโอ
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="card-footer" style="border-top: 2px solid var(--bg-light); padding: 1rem;">
+                <!-- Quick Actions -->
+                <div class="flex-center gap-2 mb-2" style="flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-outline"
+                        onclick="sendQuickMessage('รถดับกะทันหัน')">รถดับกะทันหัน</button>
+                    <button class="btn btn-sm btn-outline"
+                        onclick="sendQuickMessage('เครื่องยนต์เสียงดัง')">เครื่องยนต์เสียงดัง</button>
+                    <button class="btn btn-sm btn-outline"
+                        onclick="sendQuickMessage('แอร์ไม่เย็น')">แอร์ไม่เย็น</button>
+                    <button class="btn btn-sm btn-outline"
+                        onclick="sendQuickMessage('เบรกมีเสียง')">เบรกมีเสียง</button>
+                </div>
+
+                <!-- Input Area -->
+                <div class="flex-center gap-2">
+                    <input type="file" id="imageUpload" accept="image/*,video/*" style="display: none;"
+                        onchange="handleImageUpload(event)">
+                    <button class="btn btn-outline" onclick="document.getElementById('imageUpload').click()">
+                        📷
+                    </button>
+                    <input type="text" id="messageInput" class="form-control" placeholder="พิมพ์อาการหรือปัญหาที่พบ..."
+                        onkeypress="handleKeyPress(event)">
+                    <button class="btn btn-primary" onclick="sendMessage()">
+                        ส่ง
+                    </button>
+                </div>
+
+                <!-- Upload Preview -->
+                <div id="uploadPreview" class="d-none mt-2">
+                    <!-- Preview will be shown here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="card mt-3" style="background: var(--bg-light); box-shadow: none;">
+            <div class="card-body">
+                <p class="mb-2"><strong>ℹ️ หมายเหตุ:</strong></p>
+                <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-muted);">
+                    <li>Slate เป็น AI ช่วยวินิจฉัยเบื้องต้น ไม่ใช่การวินิจฉัยขั้นสุดท้าย</li>
+                    <li>สำหรับปัญหาร้ายแรง แนะนำให้ติดต่อช่างมืออาชีพโดยตรง</li>
+                    <li>ราคาที่ประเมินเป็นเพียงราคาโดยประมาณ อาจแตกต่างจากราคาจริง</li>
+                    <li>ฟีเจอร์นี้ใช้ได้เฉพาะสมาชิก Premium เท่านั้น</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../js/app.js"></script>
+    <script src="../js/chat.js"></script>
+</body>
+
+</html>

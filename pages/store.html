@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ร้านอะไหล่รถยนต์ออนไลน์ แสดงเฉพาะชิ้นส่วนที่เข้ากับรถของคุณ">
+    <title>ร้านอะไหล่ - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu">
+                <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="store.html" class="navbar-link active">ร้านอะไหล่</a></li>
+                <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
+                <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <h1 class="mb-3">🛒 ร้านอะไหล่</h1>
+
+        <!-- My Garage Filter (Prominent) -->
+        <div class="card mb-3" style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); color: white;">
+            <div class="card-body">
+                <div class="flex-between">
+                    <div style="flex: 1;">
+                        <h3 class="mb-1" style="color: white; font-weight: 700;">🚗 My Garage</h3>
+                        <div id="myGarageSelector" class="mb-2"></div>
+                        <p class="mb-0" style="color: white; font-weight: 600; font-size: 1.1rem;" id="myGarageVehicle">
+                            กำลังโหลด...</p>
+                    </div>
+                    <div>
+                        <label class="form-check" style="cursor: pointer;">
+                            <input type="checkbox" id="compatibleOnlyFilter" class="form-check-input" checked>
+                            <span
+                                style="color: white; font-weight: 600; font-size: 1.05rem;">แสดงเฉพาะอะไหล่ที่เข้ากับรถของฉัน</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="form-control" placeholder="ค้นหาอะไหล่...">
+            </div>
+
+            <select id="categoryFilter" class="form-control" style="flex: 0 0 200px;">
+                <option value="">ทุกหมวดหมู่</option>
+                <option value="แบตเตอรี่">แบตเตอรี่</option>
+                <option value="ยาง">ยาง</option>
+                <option value="น้ำมันเครื่อง">น้ำมันเครื่อง</option>
+                <option value="ระบบเบรก">ระบบเบรก</option>
+                <option value="ไส้กรอง">ไส้กรอง</option>
+                <option value="ระบบจุดระเบิด">ระบบจุดระเบิด</option>
+                <option value="ระบบแอร์">ระบบแอร์</option>
+            </select>
+
+            <select id="sortBy" class="form-control" style="flex: 0 0 180px;">
+                <option value="name">เรียงตามชื่อ</option>
+                <option value="price-low">ราคาต่ำ → สูง</option>
+                <option value="price-high">ราคาสูง → ต่ำ</option>
+                <option value="stock">มีสินค้ามาก → น้อย</option>
+            </select>
+
+            <button class="btn btn-primary" onclick="viewCart()">
+                🛒 ตะกร้า (<span id="cartCount">0</span>)
+            </button>
+        </div>
+
+        <!-- Results Count -->
+        <p class="text-muted mb-3">
+            พบ <strong id="resultsCount">0</strong> รายการ
+        </p>
+
+        <!-- Parts Grid -->
+        <div id="partsGrid" class="grid grid-4">
+            <!-- Parts will be populated here -->
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="text-center d-none" style="padding: 3rem 0;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📦</div>
+            <h3 class="text-muted">ไม่พบสินค้าที่ตรงกับเงื่อนไข</h3>
+            <p class="text-muted">ลองเปลี่ยนตัวกรองหรือคำค้นหา</p>
+        </div>
+    </main>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🛒 ตะกร้าสินค้า</h3>
+                <button class="modal-close" onclick="modal.close('cartModal')">×</button>
+            </div>
+            <div class="modal-body" id="cartItems">
+                <!-- Cart items will be populated here -->
+            </div>
+            <div class="modal-footer flex-between">
+                <div>
+                    <strong>รวมทั้งหมด:</strong>
+                    <span id="cartTotal" class="text-primary" style="font-size: 1.5rem; margin-left: 1rem;">฿0</span>
+                </div>
+                <div class="flex-center gap-2">
+                    <button class="btn btn-outline" onclick="modal.close('cartModal')">ปิด</button>
+                    <button class="btn btn-primary" onclick="checkout()">สั่งซื้อ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/app.js"></script>
+    <script src="../js/store.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="HelpMeCar - บริการช่างซ่อมรถฉุกเฉิน 24/7 พร้อมบริการซื้ออะไหล่และปรึกษาผู้เชี่ยวชาญ">
+    <meta name="keywords" content="ซ่อมรถ, ช่างซ่อมรถ, ซ่อมรถฉุกเฉิน, อะไหล่รถ, บำรุงรักษารถ">
+    <meta name="author" content="HelpMeCar">
+    <title>HelpMeCar - แดชบอร์ด</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Skip Navigation for Accessibility -->
+    <a href="#main-content" class="skip-nav">ข้ามไปยังเนื้อหาหลัก</a>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu">
+                <li><a href="index.html" class="navbar-link active">หน้าหลัก</a></li>
+                <li><a href="pages/vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="pages/mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="pages/booking.html" class="navbar-link">จองซ่อม</a></li>
+                <li><a href="pages/history.html" class="navbar-link">ประวัติ</a></li>
+                <li><a href="pages/store.html" class="navbar-link">ร้านค้า</a></li>
+                <li><a href="pages/consultation.html" class="navbar-link">ปรึกษา AI</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container section">
+        <!-- Welcome Section -->
+        <div class="card card-glass mb-3">
+            <div class="card-body">
+                <h2 class="mb-2"
+                    style="background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">
+                    สวัสดีคุณ <span id="userName">...</span> 👋</h2>
+                <p class="text-muted">ยินดีต้อนรับสู่ HelpMeCar - บริการช่างซ่อมรถออนไลน์ 24/7</p>
+                <div class="security-indicator mt-2">
+                    🔒 ข้อมูลของคุณได้รับการเข้ารหัสและปลอดภัย
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Call Button (Primary Action) -->
+        <div class="text-center mb-4">
+            <a href="pages/booking.html?type=emergency" class="btn btn-emergency btn-xl">
+                <span style="display: inline-block; animation: float 2s ease-in-out infinite;">🚨</span>
+                เรียกช่างฉุกเฉิน
+            </a>
+            <p class="text-muted mt-2">ช่างจะมาถึงภายใน 30-60 นาที</p>
+            <div class="trust-badge mt-2">
+                ✓ บริการตรงเวลา การันตีคุณภาพ
+            </div>
+        </div>
+
+        <!-- Current Vehicle Status -->
+        <div class="card card-glass mb-4">
+            <div class="card-header">
+                <h3 class="card-title"><span
+                        style="animation: float 3s ease-in-out infinite; display: inline-block;">🚗</span> รถของคุณ</h3>
+            </div>
+            <div class="card-body">
+                <div id="vehicleInfo">
+                    <!-- Vehicle Selector (if multiple vehicles) -->
+                    <div class="mb-3" id="vehicleSelectorContainer"></div>
+
+                    <div class="flex-between mb-2">
+                        <div>
+                            <h4 id="vehicleName" class="mb-1">กำลังโหลด...</h4>
+                            <p class="text-muted" id="vehiclePlate">-</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-muted">เลขไมล์ปัจจุบัน</p>
+                            <h4 id="vehicleMileage">-</h4>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance Progress Bar -->
+                    <div class="mt-3">
+                        <div class="flex-between mb-1">
+                            <span class="text-muted">ระยะทางถึงการบำรุงรักษาครั้งถัดไป</span>
+                            <span class="text-primary" id="mileageRemaining">-</span>
+                        </div>
+                        <div style="background: var(--bg-grey); height: 8px; border-radius: 4px; overflow: hidden;">
+                            <div id="mileageProgress"
+                                style="background: var(--steel-blue); height: 100%; width: 0%; transition: width 0.5s;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-outline btn-sm" onclick="viewVehicleDetails()">ดูรายละเอียดรถ</button>
+                <button class="btn btn-outline btn-sm" onclick="scheduleService()">นัดหมายซ่อมบำรุง</button>
+            </div>
+        </div>
+
+        <!-- Maintenance Reminders -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">⏰ การแจ้งเตือนบำรุงรักษา</h3>
+            </div>
+            <div class="card-body">
+                <div id="reminders">
+                    <!-- Reminders will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions Grid -->
+        <h3 class="mb-3">บริการของเรา</h3>
+        <div class="grid grid-2 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite;">🔧
+                    </div>
+                    <h4 class="mb-2">ค้นหาช่างซ่อม</h4>
+                    <p class="text-muted mb-3">เลือกช่างที่เหมาะสมกับปัญหาของคุณ</p>
+                    <a href="pages/mechanics.html" class="btn btn-primary">ดูช่างทั้งหมด</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.3s;">🛒
+                    </div>
+                    <h4 class="mb-2">ร้านอะไหล่</h4>
+                    <p class="text-muted mb-3">สั่งซื้ออะไหล่ที่เข้ากับรถของคุณ</p>
+                    <a href="pages/store.html" class="btn btn-primary">เข้าสู่ร้านค้า</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.6s;">📋
+                    </div>
+                    <h4 class="mb-2">ประวัติการซ่อม</h4>
+                    <p class="text-muted mb-3">ดูบันทึกการซ่อมและค่าใช้จ่าย</p>
+                    <a href="pages/history.html" class="btn btn-primary">ดูประวัติ</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body text-center">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.9s;">💬
+                    </div>
+                    <h4 class="mb-2">ปรึกษาผู้เชี่ยวชาญ</h4>
+                    <p class="text-muted mb-3">AI ช่วยวินิจฉัยปัญหารถของคุณ</p>
+                    <a href="pages/consultation.html" class="btn btn-primary">เริ่มปรึกษา</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Service History (Brief) -->
+        <div class="card">
+            <div class="card-header flex-between">
+                <h3 class="card-title">📜 การซ่อมล่าสุด</h3>
+                <a href="history.html" class="text-primary">ดูทั้งหมด →</a>
+            </div>
+            <div class="card-body">
+                <div id="recentServices">
+                    <!-- Recent services will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>

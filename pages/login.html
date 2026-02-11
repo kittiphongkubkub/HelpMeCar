@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="เข้าสู่ระบบ HelpMeCar - บริการช่างซ่อมรถฉุกเฉิน 24/7">
+    <title>เข้าสู่ระบบ - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <div class="flex-center" style="min-height: 70vh;">
+            <div class="card card-glass" style="max-width: 500px; width: 100%;">
+                <div class="card-body" style="padding: 2rem;">
+                    <!-- Logo/Header -->
+                    <div class="text-center mb-4">
+                        <div style="font-size: 4rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite;">🔧
+                        </div>
+                        <h2 class="mb-2"
+                            style="background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">
+                            ยินดีต้อนรับกลับมา</h2>
+                        <p class="text-muted">เข้าสู่ระบบ HelpMeCar</p>
+                        <div class="security-indicator mt-2">
+                            🔒 การเชื่อมต่อปลอดภัย SSL
+                        </div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="email" class="form-label">อีเมล</label>
+                            <input type="email" id="email" class="form-control" placeholder="your@email.com" required
+                                aria-label="กรอกอีเมล">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="form-label">รหัสผ่าน</label>
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" required
+                                aria-label="กรอกรหัสผ่าน">
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input type="checkbox" id="remember" class="form-check-input" aria-label="จดจำฉันไว้">
+                            <label for="remember">จดจำฉันไว้</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            เข้าสู่ระบบ
+                        </button>
+                    </form>
+
+                    <!-- Trust Indicators -->
+                    <div class="text-center mt-3">
+                        <div class="security-indicator">
+                            ✓ ข้อมูลส่วนตัวของคุณได้รับการปกป้อง
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div style="text-align: center; margin: 1.5rem 0; color: var(--text-muted);">
+                        หรือ
+                    </div>
+
+                    <!-- Register Link -->
+                    <button class="btn btn-outline" style="width: 100%;" onclick="showRegisterForm()">
+                        สมัครสมาชิกใหม่
+                    </button>
+
+                    <!-- Forgot Password -->
+                    <div class="text-center mt-3">
+                        <a href="#" class="text-primary"
+                            onclick="alert('ฟีเจอร์ลืมรหัสผ่านจะพัฒนาเร็วๆ นี้'); return false;">ลืมรหัสผ่าน?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>สมัครสมาชิก</h3>
+                <button class="modal-close" onclick="modal.close('registerModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm" onsubmit="handleRegister(event)">
+                    <!-- Role Selection -->
+                    <div class="form-group">
+                        <label class="form-label">ประเภทผู้ใช้งาน</label>
+                        <div class="grid grid-2">
+                            <label class="card" style="cursor: pointer; margin-bottom: 0;">
+                                <input type="radio" name="role" value="owner" checked style="margin: 0.5rem;">
+                                <div style="text-align: center; padding: 1rem;">
+                                    <div style="font-size: 2rem;">🚗</div>
+                                    <strong>เจ้าของรถ</strong>
+                                    <p class="text-muted" style="font-size: 0.875rem; margin: 0.5rem 0 0 0;">
+                                        ต้องการใช้บริการซ่อมรถ</p>
+                                </div>
+                            </label>
+                            <label class="card" style="cursor: pointer; margin-bottom: 0;">
+                                <input type="radio" name="role" value="mechanic" style="margin: 0.5rem;">
+                                <div style="text-align: center; padding: 1rem;">
+                                    <div style="font-size: 2rem;">🔧</div>
+                                    <strong>ช่างซ่อมรถ</strong>
+                                    <p class="text-muted" style="font-size: 0.875rem; margin: 0.5rem 0 0 0;">
+                                        ต้องการให้บริการซ่อมรถ</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="form-group">
+                        <label for="regName" class="form-label">ชื่อ-นามสกุล</label>
+                        <input type="text" id="regName" class="form-control" placeholder="สมชาย ใจดี" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regEmail" class="form-label">อีเมล</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPhone" class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="081-234-5678" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regPassword" class="form-label">รหัสผ่าน</label>
+                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required
+                            minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="regConfirmPassword" class="form-label">ยืนยันรหัสผ่าน</label>
+                        <input type="password" id="regConfirmPassword" class="form-control" placeholder="••••••••"
+                            required minlength="6">
+                    </div>
+
+                    <!-- Terms of Service Agreement -->
+                    <div class="card mb-3" style="background: var(--bg-light); box-shadow: none; padding: 1rem;">
+                        <div class="form-check">
+                            <input type="checkbox" id="acceptTerms" class="form-check-input" required>
+                            <label for="acceptTerms" style="cursor: pointer;">
+                                ฉันได้อ่านและยอมรับ <a href="terms.html" target="_blank"
+                                    class="text-primary">ข้อกำหนดการใช้งาน</a>
+                                และ <a href="terms.html#privacy" target="_blank"
+                                    class="text-primary">นโยบายความเป็นส่วนตัว</a>
+                            </label>
+                        </div>
+
+                        <div class="mt-2" style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5;">
+                            <strong>⚠️ สำคัญ:</strong>
+                            <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+                                <li>บริการนี้เป็นแพลตฟอร์มเชื่อมต่อเท่านั้น</li>
+                                <li>ความรับผิดชอบในการซ่อมเป็นของช่างและเจ้าของรถ</li>
+                                <li>ตรวจสอบและยืนยันราคาก่อนการซ่อมทุกครั้ง</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        สมัครสมาชิก
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/app.js"></script>
+    <script>
+        // Setup modal
+        modal.setupCloseOnOutsideClick('registerModal');
+
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Mock login (in production, this would call API)
+            utils.showNotification('กำลังเข้าสู่ระบบ...', 'info');
+
+            setTimeout(() => {
+                // Auto-login as mock user
+                appState.login(mockData.currentUser);
+                utils.showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }, 1000);
+        }
+
+        function showRegisterForm() {
+            modal.open('registerModal');
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                utils.showNotification('รหัสผ่านไม่ตรงกัน', 'error');
+                return;
+            }
+
+            if (!document.getElementById('acceptTerms').checked) {
+                utils.showNotification('กรุณายอมรับข้อกำหนดการใช้งาน', 'error');
+                return;
+            }
+
+            utils.showNotification('กำลังสมัครสมาชิก...', 'info');
+
+            setTimeout(() => {
+                utils.showNotification('สมัครสมาชิกสำเร็จ!', 'success');
+                modal.close('registerModal');
+
+                // Auto-login after registration
+                setTimeout(() => {
+                    const name = document.getElementById('regName').value;
+                    const email = document.getElementById('regEmail').value;
+                    const role = document.querySelector('input[name="role"]:checked').value;
+
+                    const newUser = {
+                        userId: 'U' + Date.now(),
+                        name: name,
+                        email: email,
+                        role: role,
+                        registeredVehicles: []
+                    };
+
+                    appState.login(newUser);
+                    utils.showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                }, 1000);
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
