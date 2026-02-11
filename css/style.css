@@ -597,6 +597,20 @@ a:hover {
     background: var(--secondary-grey-dark);
   }
 
+  /* Dark mode text fix */
+  [data-theme="dark"] .navbar-link {
+    color: var(--text-white);
+    background: transparent;
+  }
+
+  [data-theme="dark"] .navbar-link:hover,
+  [data-theme="dark"] .navbar-link.active {
+    color: var(--primary-blue-light);
+    background: rgba(255, 255, 255, 0.05);
+    /* Subtle highlight */
+    border-radius: var(--radius-md);
+  }
+
   .navbar-menu.active {
     transform: translateX(0);
   }
@@ -621,26 +635,25 @@ a:hover {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .dropdown-menu {
-    position: static;
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-    box-shadow: none;
-    padding-left: 0;
-    /* Reset padding */
-    background: rgba(0, 0, 0, 0.02);
-    /* Slight background for grouping */
-    margin-top: 0.5rem;
-    display: none;
-    min-width: 100%;
-    border-radius: var(--radius-md);
+  /* Navbar Divider */
+  .navbar-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.1);
+    margin: 0 0.5rem;
   }
 
-  /* Show dropdown on click/hover for mobile */
-  .nav-item.active-mobile .dropdown-menu {
-    display: block;
-    animation: fadeIn 0.2s;
+  [data-theme="dark"] .navbar-divider {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Mobile adjustments for divider */
+  @media (max-width: 992px) {
+    .navbar-divider {
+      width: 100%;
+      height: 1px;
+      margin: 0.5rem 0;
+    }
   }
 
   .nav-item {

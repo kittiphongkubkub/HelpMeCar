@@ -2209,20 +2209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme
     initializeTheme();
 
-    // Mobile Dropdown Logic
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        const link = item.querySelector('.navbar-link');
-        const dropdown = item.querySelector('.dropdown-menu');
-        if (link && dropdown) {
-            link.addEventListener('click', (e) => {
-                if (window.innerWidth <= 992) {
-                    e.preventDefault(); // Prevent navigation for dropdown toggles on mobile
-                    item.classList.toggle('active-mobile');
-                }
-            });
-        }
-    });
+
 });
 
 // ========================================
