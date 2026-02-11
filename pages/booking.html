@@ -26,6 +26,7 @@
             <ul class="navbar-menu">
                 <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
                 <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="tow-service.html" class="navbar-link">รถลาก</a></li>
                 <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
                 <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
                 <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
@@ -323,19 +324,50 @@
             );
         }
 
+
         function handleBooking(event) {
             event.preventDefault();
 
-            const formData = {
+            const vehicleId = document.getElementById('vehicleSelect').value;
+            const mechanicId = document.getElementById('mechanicSelect').value || null;
+            const symptoms = document.getElementById('symptoms').value;
+            const location = document.getElementById('location').value;
+            const scheduleDate = serviceType === 'scheduled' ? document.getElementById('scheduleDate').value : null;
+            const scheduleTime = serviceType === 'scheduled' ? document.getElementById('scheduleTime').value : null;
+
+            // Get vehicle info
+            const vehicle = mockData.vehicles.find(v => v.vehicleId === vehicleId);
+
+            // Create new job
+            const newJob = {
+                jobId: 'J' + String(mockData.jobs.length + 1).padStart(3, '0'),
+                customerId: appState.currentUser.userId,
+                customerName: appState.currentUser.name,
+                customerPhone: appState.currentUser.phone,
+                vehicleId: vehicleId,
+                mechanicId: mechanicId,
                 serviceType: serviceType,
-                vehicleId: document.getElementById('vehicleSelect').value,
-                symptoms: document.getElementById('symptoms').value,
-                location: document.getElementById('location').value,
-                mechanicId: document.getElementById('mechanicSelect').value || null,
-                scheduleDate: serviceType === 'scheduled' ? document.getElementById('scheduleDate').value : null,
-                scheduleTime: serviceType === 'scheduled' ? document.getElementById('scheduleTime').value : null,
-                images: uploadedImages
+                symptoms: symptoms,
+                location: location,
+                locationGPS: null, // Could be populated if using GPS
+                status: mechanicId ? 'accepted' : 'pending', // If mechanic selected, auto-accept
+                requestDate: new Date().toISOString(),
+                acceptedDate: mechanicId ? new Date().toISOString() : null,
+                completedDate: null,
+                scheduledDate: scheduleDate && scheduleTime ? `${scheduleDate}T${scheduleTime}:00` : null,
+                images: uploadedImages,
+                partsCost: null,
+                laborCost: null,
+                totalCost: null,
+                mechanicNotes: null,
+                partsUsed: []
             };
+
+            // Add to mockData.jobs
+            mockData.jobs.push(newJob);
+
+            // Save to localStorage
+            localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
 
             utils.showNotification('กำลังส่งคำขอ...', 'info');
 
@@ -343,13 +375,13 @@
             setTimeout(() => {
                 utils.showNotification(
                     serviceType === 'emergency'
-                        ? 'ส่งคำขอสำเร็จ! ช่างจะติดต่อกลับภายใน 5-10 นาที'
-                        : 'นัดหมายสำเร็จ! เราจะแจ้งเตือนก่อนถึงเวลานัดหมาย',
+                        ? `ส่งคำขอสำเร็จ! (Job ID: ${newJob.jobId}) ช่างจะติดต่อกลับภายใน 5-10 นาที`
+                        : `นัดหมายสำเร็จ! (Job ID: ${newJob.jobId}) เราจะแจ้งเตือนก่อนถึงเวลานัดหมาย`,
                     'success'
                 );
 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 }, 2000);
             }, 1500);
         }

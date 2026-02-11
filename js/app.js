@@ -191,6 +191,242 @@ const mockData = {
         }
     ],
 
+    // Tow Truck Operators
+    towTruckOperators: [
+        {
+            operatorId: 'T001',
+            name: 'สมบัติ รถลาก',
+            phone: '090-111-2222',
+            truckType: 'รถเก๋ง/รถกระบะ',
+            truckPlate: 'กข 1234 กรุงเทพ',
+            currentLocation: { lat: 13.7563, lng: 100.5018 },
+            available: true,
+            rating: 4.9,
+            reviewCount: 156,
+            pricePerKm: 18,
+            minimumCharge: 500,
+            estimatedArrival: 15, // minutes
+            verified: true,
+            yearsExperience: 12,
+            completedJobs: 890
+        },
+        {
+            operatorId: 'T002',
+            name: 'วิชัย รถยก',
+            phone: '091-222-3333',
+            truckType: 'รถเก๋ง/รถกระบะ/รถตู้',
+            truckPlate: 'คง 5678 กรุงเทพ',
+            currentLocation: { lat: 13.7399, lng: 100.5607 },
+            available: true,
+            rating: 4.7,
+            reviewCount: 234,
+            pricePerKm: 20,
+            minimumCharge: 600,
+            estimatedArrival: 25,
+            verified: true,
+            yearsExperience: 8,
+            completedJobs: 567
+        },
+        {
+            operatorId: 'T003',
+            name: 'ประยุทธ รถกู้ภัย',
+            phone: '092-333-4444',
+            truckType: 'รถทุกประเภท',
+            truckPlate: 'กท 9012 กรุงเทพ',
+            currentLocation: { lat: 13.7563, lng: 100.5668 },
+            available: false,
+            rating: 4.8,
+            reviewCount: 189,
+            pricePerKm: 22,
+            minimumCharge: 700,
+            estimatedArrival: 0,
+            verified: true,
+            yearsExperience: 15,
+            completedJobs: 1234
+        },
+        {
+            operatorId: 'T004',
+            name: 'อนุชา บริการลาก',
+            phone: '093-444-5555',
+            truckType: 'รถเก๋ง',
+            truckPlate: 'ขฆ 3456 กรุงเทพ',
+            currentLocation: { lat: 13.7278, lng: 100.5241 },
+            available: true,
+            rating: 4.6,
+            reviewCount: 112,
+            pricePerKm: 15,
+            minimumCharge: 450,
+            estimatedArrival: 20,
+            verified: true,
+            yearsExperience: 5,
+            completedJobs: 345
+        },
+        {
+            operatorId: 'T005',
+            name: 'สุรชัย ลากฉุกเฉิน',
+            phone: '094-555-6666',
+            truckType: 'รถเก๋ง/รถกระบะ',
+            truckPlate: 'กฉ 7890 กรุงเทพ',
+            currentLocation: { lat: 13.7650, lng: 100.5380 },
+            available: true,
+            rating: 4.9,
+            reviewCount: 278,
+            pricePerKm: 19,
+            minimumCharge: 550,
+            estimatedArrival: 10,
+            verified: true,
+            yearsExperience: 10,
+            completedJobs: 678
+        }
+    ],
+
+    // Job Bookings (งานจากลูกค้า)
+    jobs: [
+        {
+            jobId: 'J001',
+            customerId: 'U001',
+            customerName: 'สมชาย ใจดี',
+            customerPhone: '081-234-5678',
+            vehicleId: 'V001',
+            mechanicId: 'M001', // ช่างที่รับงานแล้ว
+            serviceType: 'emergency',
+            symptoms: 'เครื่องยนต์ดับกะทันหัน มีเสียงผิดปกติจากเครื่อง ควันสีดำออกมา',
+            location: 'ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7563, lng: 100.5018 },
+            status: 'completed',
+            requestDate: '2026-02-05T08:30:00',
+            acceptedDate: '2026-02-05T08:35:00',
+            completedDate: '2026-02-05T11:00:00',
+            scheduledDate: null,
+            images: [],
+            partsCost: 1050,
+            laborCost: 1500,
+            totalCost: 2800,
+            mechanicNotes: 'เปลี่ยนหัวเทียนและสายหัวเทียน ทดสอบเครื่องยนต์เรียบร้อย',
+            partsUsed: [
+                { name: 'หัวเทียน NGK', quantity: 4, price: 600 },
+                { name: 'สายหัวเทียน', quantity: 1, price: 450 }
+            ]
+        },
+        {
+            jobId: 'J002',
+            customerId: 'U001',
+            customerName: 'สมชาย ใจดี',
+            customerPhone: '081-234-5678',
+            vehicleId: 'V001',
+            mechanicId: 'M002',
+            serviceType: 'emergency',
+            symptoms: 'แอร์ไม่เย็น คอมเพรสเซอร์ไม่ทำงาน',
+            location: 'ถนนพระราม 4 แขวงพระโขนง เขตคลองเตย กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7399, lng: 100.5607 },
+            status: 'completed',
+            requestDate: '2026-01-28T15:20:00',
+            acceptedDate: '2026-01-28T15:25:00',
+            completedDate: '2026-01-28T17:30:00',
+            scheduledDate: null,
+            images: [],
+            partsCost: 450,
+            laborCost: 1200,
+            totalCost: 1650,
+            mechanicNotes: 'เติมน้ำยาแอร์ ทำความสะอาดคอมเพรสเซอร์',
+            partsUsed: [
+                { name: 'น้ำยาแอร์ R134a', quantity: 1, price: 450 }
+            ]
+        },
+        {
+            jobId: 'J003',
+            customerId: 'U002',
+            customerName: 'สมหญิง รักดี',
+            customerPhone: '082-345-6789',
+            vehicleId: 'V003',
+            mechanicId: 'M001',
+            serviceType: 'emergency',
+            symptoms: 'ยางหน้าแตก ไม่สามารถขับต่อได้',
+            location: 'ถนนศรีนครินทร์ แขวงหนองบอน เขตประเวศ กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7165, lng: 100.6430 },
+            status: 'in_progress',
+            requestDate: '2026-02-11T10:15:00',
+            acceptedDate: '2026-02-11T10:20:00',
+            completedDate: null,
+            scheduledDate: null,
+            images: [],
+            partsCost: null,
+            laborCost: null,
+            totalCost: null,
+            mechanicNotes: null,
+            partsUsed: []
+        },
+        {
+            jobId: 'J004',
+            customerId: 'U003',
+            customerName: 'วิชัย มั่นคง',
+            customerPhone: '083-456-7890',
+            vehicleId: 'V005',
+            mechanicId: null, // ยังไม่มีช่างรับ
+            serviceType: 'emergency',
+            symptoms: 'แบตเตอรี่หมด รถสตาร์ทไม่ติด',
+            location: 'ถนนรัชดาภิเษก แขวงดินแดง เขตดินแดง กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7650, lng: 100.5380 },
+            status: 'pending',
+            requestDate: '2026-02-11T20:30:00',
+            acceptedDate: null,
+            completedDate: null,
+            scheduledDate: null,
+            images: [],
+            partsCost: null,
+            laborCost: null,
+            totalCost: null,
+            mechanicNotes: null,
+            partsUsed: []
+        },
+        {
+            jobId: 'J005',
+            customerId: 'U004',
+            customerName: 'กมล สวยงาม',
+            customerPhone: '084-567-8901',
+            vehicleId: 'V006',
+            mechanicId: null,
+            serviceType: 'scheduled',
+            symptoms: 'ต้องการเปลี่ยนถ่ายน้ำมันเครื่อง ตามระยะ',
+            location: 'ซอยสุขุมวิท 71 แขวงพระโขนงเหนือ เขตวัฒนา กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7278, lng: 100.5930 },
+            status: 'pending',
+            requestDate: '2026-02-11T09:00:00',
+            acceptedDate: null,
+            completedDate: null,
+            scheduledDate: '2026-02-12T10:00:00',
+            images: [],
+            partsCost: null,
+            laborCost: null,
+            totalCost: null,
+            mechanicNotes: null,
+            partsUsed: []
+        },
+        {
+            jobId: 'J006',
+            customerId: 'U001',
+            customerName: 'สมชาย ใจดี',
+            customerPhone: '081-234-5678',
+            vehicleId: 'V002',
+            mechanicId: null,
+            serviceType: 'emergency',
+            symptoms: 'เบรกไม่อยู่ มีเสียงดังจากล้อ',
+            location: 'ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพมหานคร',
+            locationGPS: { lat: 13.7604, lng: 100.5678 },
+            status: 'pending',
+            requestDate: '2026-02-11T21:00:00',
+            acceptedDate: null,
+            completedDate: null,
+            scheduledDate: null,
+            images: [],
+            partsCost: null,
+            laborCost: null,
+            totalCost: null,
+            mechanicNotes: null,
+            partsUsed: []
+        }
+    ],
+
     // Current User (mock logged in user)
     currentUser: {
         userId: 'U001',
@@ -1975,12 +2211,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initializeTheme() {
     // Check localStorage for saved theme preference
-    const savedTheme = localStorage.getItem('helpmecar_theme') || 'light';
+    const savedTheme = localStorage.getItem('helpmecar_theme') || 'dark';
     setTheme(savedTheme, false); // false = don't show notification on init
 }
 
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     setTheme(newTheme, true); // true = show notification
 }

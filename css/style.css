@@ -393,6 +393,14 @@ a:hover {
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
+/* Navbar Divider for grouping */
+.navbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 0 0.5rem;
+}
+
 /* Mobile Menu Toggle */
 .navbar-toggle {
   display: none;

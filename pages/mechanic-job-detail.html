@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="รายละเอียดงาน - Dashboard ช่าง">
+    <title>รายละเอียดงาน - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="mechanic-dashboard.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="navbar-menu">
+                <li><a href="mechanic-dashboard.html" class="navbar-link">Dashboard</a></li>
+                <li><a href="mechanic-jobs.html" class="navbar-link">งานทั้งหมด</a></li>
+                <li class="navbar-divider"></li>
+                <li><a href="../index.html" class="navbar-link" style="background: linear-gradient(135deg, #10B981, #059669); 
+                           color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">
+                        🚗 โหมดเจ้าของ
+                    </a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <div class="mb-3">
+            <a href="mechanic-dashboard.html" class="btn btn-outline">← กลับ Dashboard</a>
+        </div>
+
+        <h1 class="mb-4" id="jobTitle">รายละเอียดงาน</h1>
+
+        <!-- Job Status Timeline -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">📊 สถานะงาน</h3>
+            </div>
+            <div class="card-body">
+                <div id="statusTimeline" class="mb-3"></div>
+                <div class="flex-between">
+                    <span id="currentStatus" class="badge"
+                        style="background: var(--primary); font-size: 1rem; padding: 0.5rem 1rem;"></span>
+                    <div id="statusActions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer & Vehicle Info -->
+        <div class="grid grid-2 gap-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">👤 ข้อมูลลูกค้า</h3>
+                </div>
+                <div class="card-body" id="customerInfo"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🚗 ข้อมูลรถ</h3>
+                </div>
+                <div class="card-body" id="vehicleInfo"></div>
+            </div>
+        </div>
+
+        <!-- Job Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">📋 รายละเอียดงาน</h3>
+            </div>
+            <div class="card-body" id="jobDetails"></div>
+        </div>
+
+        <!-- Service Form (only for in_progress) -->
+        <div class="card mb-4 d-none" id="serviceFormCard">
+            <div class="card-header">
+                <h3 class="card-title">🔧 บันทึกการซ่อม</h3>
+            </div>
+            <div class="card-body">
+                <form id="serviceForm">
+                    <!-- Parts Used -->
+                    <div class="mb-3">
+                        <label class="form-label"><strong>อะไหล่ที่ใช้:</strong></label>
+                        <div id="partsList"></div>
+                        <button type="button" class="btn btn-outline mt-2" onclick="addPart()">+ เพิ่มอะไหล่</button>
+                    </div>
+
+                    <!-- Labor Cost -->
+                    <div class="form-group">
+                        <label for="laborCost" class="form-label">ค่าแรง (บาท):</label>
+                        <input type="number" id="laborCost" class="form-control" value="0" min="0" step="100">
+                    </div>
+
+                    <!-- Total Display -->
+                    <div class="mb-3">
+                        <p><strong>ค่าอะไหล่รวม:</strong> <span id="totalPartsCost">฿0</span></p>
+                        <p><strong>ค่าแรง:</strong> <span id="displayLaborCost">฿0</span></p>
+                        <h3 class="text-primary">รวมทั้งสิ้น: <span id="grandTotal">฿0</span></h3>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group">
+                        <label for="mechanicNotes" class="form-label">หมายเหตุ/รายละเอียดการซ่อม:</label>
+                        <textarea id="mechanicNotes" class="form-control" rows="4"
+                            placeholder="บันทึกรายละเอียดการซ่อม..."></textarea>
+                    </div>
+
+                    <div class="flex-between">
+                        <button type="button" class="btn btn-outline" onclick="saveDraft()">บันทึกแบบร่าง</button>
+                        <button type="button" class="btn btn-success" onclick="completeJob()">✅
+                            ทำเครื่องหมายเสร็จสิ้น</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Completed Job Summary -->
+        <div class="card mb-4 d-none" id="completedSummary">
+            <div class="card-header">
+                <h3 class="card-title">✅ สรุปงานที่เสร็จแล้ว</h3>
+            </div>
+            <div class="card-body" id="completedDetails"></div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script>
+        let currentJob = null;
+        let partsCount = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('jobId');
+
+            if (!jobId) {
+                window.location.href = 'mechanic-dashboard.html';
+                return;
+            }
+
+            loadJob(jobId);
+        });
+
+        function loadJob(jobId) {
+            currentJob = mockData.jobs.find(j => j.jobId === jobId);
+
+            if (!currentJob) {
+                utils.showNotification('ไม่พบงานนี้', 'error');
+                setTimeout(() => window.location.href = 'mechanic-dashboard.html', 1500);
+                return;
+            }
+
+            const vehicle = mockData.vehicles.find(v => v.vehicleId === currentJob.vehicleId);
+
+            // Title
+            document.getElementById('jobTitle').textContent = `งาน #${currentJob.jobId}`;
+
+            // Status Timeline
+            renderStatusTimeline();
+
+            // Customer Info
+            document.getElementById('customerInfo').innerHTML = `
+        <p><strong>ชื่อ:</strong> ${currentJob.customerName}</p>
+        <p><strong>โทร:</strong> <a href="tel:${currentJob.customerPhone}">${currentJob.customerPhone}</a></p>
+      `;
+
+            // Vehicle Info
+            document.getElementById('vehicleInfo').innerHTML = vehicle ? `
+        <p><strong>รถ:</strong> ${vehicle.make} ${vehicle.model}</p>
+        <p><strong>ปี:</strong> ${vehicle.year}</p>
+        <p><strong>ทะเบียน:</strong> ${vehicle.licensePlate}</p>
+        <p><strong>สี:</strong> ${vehicle.color}</p>
+      ` : '<p class="text-muted">ไม่พบข้อมูลรถ</p>';
+
+            // Job Details
+            const isEmergency = currentJob.serviceType === 'emergency';
+            document.getElementById('jobDetails').innerHTML = `
+        <p><strong>ประเภท:</strong> ${isEmergency ? '🚨 ฉุกเฉิน' : '📅 นัดหมาย'}</p>
+        ${currentJob.scheduledDate ? `<p><strong>วันนัดหมาย:</strong> ${utils.formatDate(currentJob.scheduledDate)}</p>` : ''}
+        <p><strong>วันที่รับแจ้ง:</strong> ${utils.formatDate(currentJob.requestDate)}</p>
+        ${currentJob.acceptedDate ? `<p><strong>วันที่รับงาน:</strong> ${utils.formatDate(currentJob.acceptedDate)}</p>` : ''}
+        <p><strong>📍 สถานที่:</strong> ${currentJob.location}</p>
+        <hr>
+        <p><strong>⚠️ ปัญหา/อาการ:</strong></p>
+        <p>${currentJob.symptoms}</p>
+      `;
+
+            // Show appropriate form/summary
+            if (currentJob.status === 'completed') {
+                showCompletedSummary();
+            } else if (currentJob.status === 'in_progress' || currentJob.status === 'accepted') {
+                showServiceForm();
+            }
+        }
+
+        function renderStatusTimeline() {
+            const statuses = [
+                { key: 'pending', label: 'รอรับงาน', date: currentJob.requestDate },
+                { key: 'accepted', label: 'รับงานแล้ว', date: currentJob.acceptedDate },
+                { key: 'in_progress', label: 'กำลังทำ', date: currentJob.status === 'in_progress' ? new Date().toISOString() : null },
+                { key: 'completed', label: 'เสร็จสิ้น', date: currentJob.completedDate }
+            ];
+
+            let currentStatusIndex = statuses.findIndex(s => s.key === currentJob.status);
+
+            const timeline = statuses.map((status, index) => {
+                const isActive = index <= currentStatusIndex;
+                const color = isActive ? 'var(--primary)' : 'var(--text-muted)';
+
+                return `
+          <div style="display: inline-block; margin-right: 1rem;">
+            <span style="color: ${color}; font-weight: ${isActive ? 'bold' : 'normal'};">
+              ${isActive ? '✅' : '⭕'} ${status.label}
+            </span>
+            ${status.date && isActive ? `<br><small style="color: var(--text-muted);">${utils.formatDate(status.date)}</small>` : ''}
+          </div>
+        `;
+            }).join('<span style="color: var(--text-muted);">→</span>');
+
+            document.getElementById('statusTimeline').innerHTML = timeline;
+
+            // Current status badge
+            const statusLabels = { pending: 'รอรับงาน', accepted: 'รับงานแล้ว', in_progress: 'กำลังทำ', completed: 'เสร็จสิ้น' };
+            document.getElementById('currentStatus').textContent = statusLabels[currentJob.status];
+
+            // Status actions
+            let actionsHTML = '';
+            if (currentJob.status === 'accepted') {
+                actionsHTML = `<button class="btn btn-primary" onclick="startJob()">เริ่มทำงาน</button>`;
+            }
+            document.getElementById('statusActions').innerHTML = actionsHTML;
+        }
+
+        function startJob() {
+            currentJob.status = 'in_progress';
+            localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
+            utils.showNotification('เริ่มทำงานแล้ว', 'success');
+            renderStatusTimeline();
+            showServiceForm();
+        }
+
+        function showServiceForm() {
+            document.getElementById('serviceFormCard').classList.remove('d-none');
+            document.getElementById('completedSummary').classList.add('d-none');
+
+            // Pre-fill if data exists
+            if (currentJob.laborCost) document.getElementById('laborCost').value = currentJob.laborCost;
+            if (currentJob.mechanicNotes) document.getElementById('mechanicNotes').value = currentJob.mechanicNotes;
+
+            // Load existing parts
+            if (currentJob.partsUsed && currentJob.partsUsed.length > 0) {
+                currentJob.partsUsed.forEach(part => {
+                    addPart(part.name, part.quantity, part.price);
+                });
+            }
+
+            calculateTotal();
+        }
+
+        function addPart(name = '', qty = 1, price = 0) {
+            partsCount++;
+            const partHTML = `
+        <div class="grid grid-3 gap-2 mb-2" id="part${partsCount}">
+          <input type="text" class="form-control" placeholder="ชื่ออะไหล่" value="${name}" onchange="calculateTotal()">
+          <input type="number" class="form-control" placeholder="จำนวน" value="${qty}" min="1" onchange="calculateTotal()">
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="number" class="form-control" placeholder="ราคา" value="${price}" min="0" onchange="calculateTotal()">
+            <button type="button" class="btn btn-outline" onclick="removePart(${partsCount})" style="padding: 0.5rem;">🗑️</button>
+          </div>
+        </div>
+      `;
+            document.getElementById('partsList').insertAdjacentHTML('beforeend', partHTML);
+            calculateTotal();
+        }
+
+        function removePart(id) {
+            document.getElementById(`part${id}`).remove();
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let partsCost = 0;
+            const partsList = document.getElementById('partsList');
+            const parts = partsList.querySelectorAll('.grid');
+
+            parts.forEach(part => {
+                const inputs = part.querySelectorAll('input');
+                const qty = parseFloat(inputs[1].value) || 0;
+                const price = parseFloat(inputs[2].value) || 0;
+                partsCost += qty * price;
+            });
+
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+            const total = partsCost + laborCost;
+
+            document.getElementById('totalPartsCost').textContent = utils.formatCurrency(partsCost);
+            document.getElementById('displayLaborCost').textContent = utils.formatCurrency(laborCost);
+            document.getElementById('grandTotal').textContent = utils.formatCurrency(total);
+        }
+
+        document.getElementById('laborCost').addEventListener('input', calculateTotal);
+
+        function saveDraft() {
+            saveJobData();
+            utils.showNotification('บันทึกแบบร่างแล้ว', 'success');
+        }
+
+        function saveJobData() {
+            // Collect parts
+            const partsList = document.getElementById('partsList');
+            const parts = [];
+            const partDivs = partsList.querySelectorAll('.grid');
+
+            partDivs.forEach(part => {
+                const inputs = part.querySelectorAll('input');
+                const name = inputs[0].value.trim();
+                const qty = parseFloat(inputs[1].value) || 0;
+                const price = parseFloat(inputs[2].value) || 0;
+
+                if (name) {
+                    parts.push({ name, quantity: qty, price: price, totalPrice: qty * price });
+                }
+            });
+
+            const partsCost = parts.reduce((sum, p) => sum + p.totalPrice, 0);
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+
+            currentJob.partsUsed = parts;
+            currentJob.partsCost = partsCost;
+            currentJob.laborCost = laborCost;
+            currentJob.totalCost = partsCost + laborCost;
+            currentJob.mechanicNotes = document.getElementById('mechanicNotes').value;
+
+            localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
+        }
+
+        function completeJob() {
+            if (!confirm('ยืนยันการทำเครื่องหมายงานเสร็จสิ้น?')) return;
+
+            saveJobData();
+
+            currentJob.status = 'completed';
+            currentJob.completedDate = new Date().toISOString();
+
+            // Add to maintenance logs
+            const maintenanceLog = {
+                logId: 'L' + String(mockData.maintenanceLogs.length + 1).padStart(3, '0'),
+                vehicleId: currentJob.vehicleId,
+                date: currentJob.completedDate,
+                serviceType: currentJob.symptoms,
+                mechanicId: currentJob.mechanicId,
+                description: currentJob.mechanicNotes || currentJob.symptoms,
+                partsUsed: currentJob.partsUsed,
+                partsCost: currentJob.partsCost,
+                laborCost: currentJob.laborCost,
+                totalCost: currentJob.totalCost,
+                mileage: null
+            };
+            mockData.maintenanceLogs.push(maintenanceLog);
+
+            localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
+            localStorage.setItem('helpmecar_maintenance', JSON.stringify(mockData.maintenanceLogs));
+
+            utils.showNotification('งานเสร็จสิ้น! บันทึกลงประวัติแล้ว', 'success');
+
+            setTimeout(() => {
+                window.location.href = 'mechanic-dashboard.html';
+            }, 1500);
+        }
+
+        function showCompletedSummary() {
+            document.getElementById('serviceFormCard').classList.add('d-none');
+            document.getElementById('completedSummary').classList.remove('d-none');
+            document.getElementById('completedDetails').innerHTML = `<p><strong>ค่าอะไหล่:</strong> ${utils.formatCurrency(currentJob.partsCost || 0)}</p><p><strong>ค่าแรง:</strong> ${utils.formatCurrency(currentJob.laborCost || 0)}</p><h3 class="text-primary">รวม: ${utils.formatCurrency(currentJob.totalCost || 0)}</h3>${currentJob.mechanicNotes ? `<hr><p><strong>หมายเหตุ:</strong></p><p>${currentJob.mechanicNotes}</p>` : ''}${currentJob.partsUsed && currentJob.partsUsed.length > 0 ? `<hr><p><strong>อะไหล่ที่ใช้:</strong></p><ul>${currentJob.partsUsed.map(p => `<li>${p.name} x${p.quantity} = ${utils.formatCurrency(p.totalPrice)}</li>`).join('')}</ul>` : ''}`;
+        }
+    </script>
+</body>
+
+</html>

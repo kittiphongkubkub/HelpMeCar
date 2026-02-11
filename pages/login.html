@@ -192,17 +192,37 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Mock login (in production, this would call API)
+            // Mock login - determine role based on email
+            let user;
+            if (email.includes('mechanic') || email.includes('ช่าง')) {
+                // Login as mechanic
+                user = mockData.mechanics[0]; // สมศักดิ์ ช่างฝีมือ
+                user = {
+                    ...user,
+                    role: 'mechanic',
+                    userId: user.mechanicId,
+                    email: email
+                };
+                localStorage.setItem('helpmecar_current_mechanic', user.mechanicId);
+            } else {
+                // Login as owner
+                user = mockData.currentUser;
+                user.role = 'owner';
+            }
+
             utils.showNotification('กำลังเข้าสู่ระบบ...', 'info');
 
             setTimeout(() => {
-                // Auto-login as mock user
-                appState.login(mockData.currentUser);
-                utils.showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
+                appState.login(user);
+                utils.showNotification(`เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับ ${user.name}`, 'success');
 
-                // Redirect to dashboard
+                // Redirect based on role
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    if (user.role === 'mechanic') {
+                        window.location.href = 'mechanic-dashboard.html';
+                    } else {
+                        window.location.href = '../index.html';
+                    }
                 }, 1000);
             }, 1000);
         }
@@ -227,6 +247,8 @@
                 return;
             }
 
+            const role = document.querySelector('input[name="role"]:checked').value;
+
             utils.showNotification('กำลังสมัครสมาชิก...', 'info');
 
             setTimeout(() => {
@@ -237,21 +259,32 @@
                 setTimeout(() => {
                     const name = document.getElementById('regName').value;
                     const email = document.getElementById('regEmail').value;
-                    const role = document.querySelector('input[name="role"]:checked').value;
+                    const phone = document.getElementById('regPhone').value;
 
                     const newUser = {
-                        userId: 'U' + Date.now(),
+                        userId: (role === 'mechanic' ? 'M' : 'U') + Date.now(),
                         name: name,
                         email: email,
+                        phone: phone,
                         role: role,
                         registeredVehicles: []
                     };
 
                     appState.login(newUser);
+
+                    if (role === 'mechanic') {
+                        localStorage.setItem('helpmecar_current_mechanic', newUser.userId);
+                    }
+
                     utils.showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
 
+                    // Redirect based on role
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        if (role === 'mechanic') {
+                            window.location.href = 'mechanic-dashboard.html';
+                        } else {
+                            window.location.href = '../index.html';
+                        }
                     }, 1000);
                 }, 1000);
             }, 1500);

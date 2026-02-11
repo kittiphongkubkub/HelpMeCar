@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="บริการรถลากฉุกเฉิน 24/7 - HelpMeCar">
+    <title>บริการรถลาก - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="navbar-menu">
+                <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="booking.html" class="navbar-link">จองซ่อม</a></li>
+                <li><a href="tow-service.html" class="navbar-link active">รถลาก</a></li>
+                <li><a href="store.html" class="navbar-link">ร้านค้า</a></li>
+                <li><a href="consultation.html" class="navbar-link">ปรึกษา AI</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <h1 class="mb-3">🚛 บริการรถลาก</h1>
+        <p class="text-muted mb-4">บริการรถลากฉุกเฉิน 24/7 สำหรับกรณีรถเสียหรือไม่สามารถขับเคลื่อนได้</p>
+
+        <!-- Request Form -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">📝 ระบุข้อมูลการลาก</h3>
+            </div>
+            <div class="card-body">
+                <form id="towRequestForm">
+                    <!-- Vehicle Selection -->
+                    <div class="mb-3">
+                        <label for="vehicleSelect" class="form-label">🚗 เลือกรถที่ต้องการลาก</label>
+                        <select id="vehicleSelect" class="form-control" required>
+                            <option value="">-- เลือกรถ --</option>
+                        </select>
+                    </div>
+
+                    <!-- Problem/Reason -->
+                    <div class="mb-3">
+                        <label for="problemSelect" class="form-label">⚠️ ปัญหา/สาเหตุ</label>
+                        <select id="problemSelect" class="form-control" required>
+                            <option value="">-- เลือกปัญหา --</option>
+                            <option value="engine">เครื่องยนต์เสีย</option>
+                            <option value="battery">แบตเตอรี่หมด</option>
+                            <option value="accident">อุบัติเหตุ</option>
+                            <option value="tire">ยางแตก</option>
+                            <option value="other">อื่น ๆ</option>
+                        </select>
+                    </div>
+
+                    <!-- Pickup Location -->
+                    <div class="mb-3">
+                        <label for="pickupLocation" class="form-label">📍 จุดรับรถ</label>
+                        <input type="text" id="pickupLocation" class="form-control" placeholder="ระบุที่อยู่หรือสถานที่"
+                            required>
+                        <button type="button" class="btn btn-sm btn-outline mt-2" onclick="useCurrentLocation()">
+                            📌 ใช้ตำแหน่งปัจจุบัน
+                        </button>
+                    </div>
+
+                    <!-- Destination -->
+                    <div class="mb-3">
+                        <label for="destination" class="form-label">🏁 จุดหมาย</label>
+                        <input type="text" id="destination" class="form-control"
+                            placeholder="ระบุที่อยู่อู่หรือสถานที่ซ่อม" required>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">📝 หมายเหตุ (ถ้ามี)</label>
+                        <textarea id="notes" class="form-control" rows="3"
+                            placeholder="ระบุรายละเอียดเพิ่มเติม เช่น สภาพรถ ข้อจำกัดในการลาก"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">🔍 ค้นหารถลาก</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Distance & Price Estimate -->
+        <div id="estimateCard" class="card mb-4 d-none">
+            <div class="card-header"
+                style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;">
+                <h3 class="card-title" style="color: white;">💰 ค่าบริการโดยประมาณ</h3>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-2 mb-3">
+                    <div>
+                        <p class="text-muted mb-1">ระยะทาง</p>
+                        <h3 id="estimatedDistance">-</h3>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-muted mb-1">ราคาโดยประมาณ</p>
+                        <h3 class="text-primary" id="estimatedPrice">-</h3>
+                    </div>
+                </div>
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    ⚠️ ราคาเป็นเพียงการประมาณการเบื้องต้น ราคาจริงอาจแตกต่างตามสภาพการจราจรและสภาพรถ
+                </p>
+            </div>
+        </div>
+
+        <!-- Available Tow Trucks -->
+        <div id="towTrucksSection" class="d-none">
+            <div class="flex-between mb-3">
+                <h2>🚛 รถลากที่พร้อมให้บริการ</h2>
+                <p class="text-muted" id="availableCount">-</p>
+            </div>
+            <div id="towTrucksList" class="grid grid-1 gap-3">
+                <!-- Tow trucks cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="text-center" style="padding: 3rem 0;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🚛</div>
+            <h3 class="text-muted">กรอกฟอร์มเพื่อค้นหารถลาก</h3>
+            <p class="text-muted">ระบุข้อมูลด้านบนแล้วกดปุ่ม "ค้นหารถลาก" เพื่อดูรถลากที่พร้อมให้บริการ</p>
+        </div>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>ยืนยันการเรียกรถลาก</h3>
+                <button class="modal-close" onclick="modal.close('confirmModal')">×</button>
+            </div>
+            <div class="modal-body" id="confirmDetails">
+                <!-- Confirmation details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="modal.close('confirmModal')">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="confirmTowRequest()">ยืนยันการเรียก</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/app.js"></script>
+    <script src="../js/tow-service.js"></script>
+</body>
+
+</html>

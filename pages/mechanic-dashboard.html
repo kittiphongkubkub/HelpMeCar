@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="แดชบอร์ดช่างซ่อมรถ - HelpMeCar">
+    <title>Dashboard ช่าง - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="mechanic-dashboard.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+            <button class="navbar-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="navbar-menu">
+                <li><a href="mechanic-dashboard.html" class="navbar-link active">Dashboard</a></li>
+                <li><a href="mechanic-jobs.html" class="navbar-link">งานทั้งหมด</a></li>
+                <li class="navbar-divider"></li>
+                <li><a href="../index.html" class="navbar-link" style="background: linear-gradient(135deg, #10B981, #059669); 
+                           color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">
+                        🚗 โหมดเจ้าของ
+                    </a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+        <div class="flex-between mb-4">
+            <h1>🔧 Dashboard ช่างซ่อม</h1>
+            <div>
+                <span id="mechanicName" class="text-muted"></span>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-4 gap-3 mb-4">
+            <div class="card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); color: white;">
+                <div class="card-body">
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">งานวันนี้</p>
+                    <h2 style="color: white;" id="todayJobs">0</h2>
+                </div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white;">
+                <div class="card-body">
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">รายได้เดือนนี้</p>
+                    <h2 style="color: white;" id="monthlyEarnings">฿0</h2>
+                </div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white;">
+                <div class="card-body">
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">Rating</p>
+                    <h2 style="color: white;" id="mechanicRating">0.0 ⭐</h2>
+                </div>
+            </div>
+            <div class="card" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: white;">
+                <div class="card-body">
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 0.5rem;">งานสำเร็จ</p>
+                    <h2 style="color: white;" id="completedJobs">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Job Requests -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">🆕 งานใหม่ที่รอรับ</h3>
+            </div>
+            <div class="card-body">
+                <div id="pendingJobsList"></div>
+            </div>
+        </div>
+
+        <!-- Active Jobs -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="card-title">⚡ งานที่กำลังทำ</h3>
+            </div>
+            <div class="card-body">
+                <div id="activeJobsList"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/app.js"></script>
+    <script src="../js/mechanic-dashboard.js"></script>
+</body>
+
+</html>
