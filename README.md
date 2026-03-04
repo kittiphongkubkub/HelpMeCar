@@ -2,7 +2,7 @@
 
 แพลตฟอร์มเว็บสำหรับเรียกช่างซ่อมรถฉุกเฉิน จัดการรถยนต์ ดูประวัติการซ่อม สั่งซื้ออะไหล่ และปรึกษา AI เกี่ยวกับปัญหารถ
 
-🔗 **Live Demo:** [kittiphongkubkub.github.io/HelpMeCar](https://kittiphongkubkub.github.io/HelpMeCar)
+🔗 **Demo:** [kittiphongkubkub.github.io/HelpMeCar](https://kittiphongkubkub.github.io/HelpMeCar/)
 
 ---
 
