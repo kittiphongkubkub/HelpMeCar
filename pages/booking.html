@@ -7,194 +7,297 @@
     <meta name="description" content="จองช่างซ่อมรถฉุกเฉินหรือนัดหมายล่วงหน้า">
     <title>จองบริการ - HelpMeCar</title>
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Type selector */
+        .type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-option {
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: var(--bg-card);
+        }
+
+        .type-option.selected-emergency {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .type-option.selected-scheduled {
+            border-color: var(--brand-primary);
+            background: var(--brand-light);
+        }
+
+        .type-option input[type=radio] {
+            display: none;
+        }
+
+        .type-option .type-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .type-option .type-label {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .type-option .type-sub {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Emergency info box  */
+        .emergency-info {
+            background: var(--danger-bg);
+            border: 1.5px solid var(--danger);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .emergency-info h4 {
+            color: var(--danger);
+            margin-bottom: 0.35rem;
+            font-size: 0.95rem;
+        }
+
+        .emergency-phone {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 0.4rem 0.875rem;
+            margin-top: 0.5rem;
+            font-weight: 800;
+            color: var(--danger);
+            font-size: 1rem;
+        }
+
+        [data-theme="dark"] .emergency-phone {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Step indicator */
+        .step-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-num {
+            width: 20px;
+            height: 20px;
+            background: var(--brand-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="../index.html" class="navbar-brand">
-                🔧 HelpMeCar
-            </a>
-
-            <button class="navbar-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <a href="../index.html" class="navbar-brand">🔧 HelpMeCar</a>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
             </button>
-
-            <ul class="navbar-menu">
+            <ul class="navbar-menu" id="navMenu">
                 <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
                 <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="booking.html" class="navbar-link active">จองซ่อม</a></li>
                 <li><a href="tow-service.html" class="navbar-link">รถลาก</a></li>
                 <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
-                <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
-                <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
+                <li><a href="history.html" class="navbar-link">ประวัติซ่อม</a></li>
+                <li><a href="consultation.html" class="navbar-link">AI ปรึกษา</a></li>
+                <li class="navbar-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span id="themeIcon">🌙</span>
+                    </button>
+                </li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="container section">
-        <h1 class="mb-3" id="pageTitle">📞 จองบริการซ่อมรถ</h1>
+        <!-- Page Header -->
+        <div style="margin-bottom: 1.5rem;">
+            <h1 id="pageTitle" style="font-size: 1.5rem; margin-bottom: 0.25rem;">📋 จองบริการซ่อมรถ</h1>
+            <p class="text-muted" style="font-size: 0.875rem; margin: 0;">เลือกประเภทบริการและกรอกรายละเอียด</p>
+        </div>
 
-        <!-- Service Type Selection -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h3 class="card-title">เลือกประเภทบริการ</h3>
-            </div>
-            <div class="card-body">
-                <div class="grid grid-2">
-                    <label class="card" id="emergencyCard"
-                        style="cursor: pointer; border: 2px solid var(--danger); background: linear-gradient(135deg, #FFF 0%, #FFE6E6 100%);">
-                        <input type="radio" name="serviceType" value="emergency" checked
-                            onchange="updateServiceType('emergency')" style="margin: 1rem;">
-                        <div style="text-align: center; padding: 1.5rem;">
-                            <div style="font-size: 3rem;">🚨</div>
-                            <h3 class="mb-2" style="color: var(--danger);">ฉุกเฉิน</h3>
-                            <p class="text-muted">ช่างจะมาถึงภายใน 30-60 นาที</p>
-                        </div>
-                    </label>
+        <!-- Step 1: Service Type -->
+        <div class="step-label"><span class="step-num">1</span> เลือกประเภทบริการ</div>
+        <div class="type-selector mb-4">
+            <label class="type-option selected-emergency" id="emergencyCard">
+                <input type="radio" name="serviceType" value="emergency" checked
+                    onchange="updateServiceType('emergency')">
+                <span class="type-icon">🚨</span>
+                <div class="type-label" style="color: var(--danger);">ฉุกเฉิน</div>
+                <div class="type-sub">ช่างถึงใน 30-60 นาที</div>
+            </label>
+            <label class="type-option" id="scheduledCard">
+                <input type="radio" name="serviceType" value="scheduled" onchange="updateServiceType('scheduled')">
+                <span class="type-icon">📅</span>
+                <div class="type-label">นัดหมายล่วงหน้า</div>
+                <div class="type-sub">เลือกวันและเวลาเอง</div>
+            </label>
+        </div>
 
-                    <label class="card" id="scheduledCard" style="cursor: pointer;">
-                        <input type="radio" name="serviceType" value="scheduled"
-                            onchange="updateServiceType('scheduled')" style="margin: 1rem;">
-                        <div style="text-align: center; padding: 1.5rem;">
-                            <div style="font-size: 3rem;">📅</div>
-                            <h3 class="mb-2">นัดหมายล่วงหน้า</h3>
-                            <p class="text-muted">เลือกวันและเวลาที่สะดวก</p>
-                        </div>
-                    </label>
-                </div>
-            </div>
+        <!-- Emergency Info (shown for emergency) -->
+        <div id="emergencyInfoBox" class="emergency-info mb-4">
+            <h4>🚨 ระบบจะจัดช่างให้อัตโนมัติ</h4>
+            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
+                ระบบจะเลือกช่างที่อยู่ใกล้ที่สุดและส่งไปให้คุณทันที คอลเซ็นเตอร์จะติดต่อกลับภายใน 5 นาที</p>
+            <a href="tel:02999888" class="emergency-phone"><span>📞</span> 02-999-888</a>
         </div>
 
         <!-- Booking Form -->
         <form id="bookingForm" onsubmit="handleBooking(event)">
-            <!-- Vehicle Selection -->
+
+            <!-- Step 2: Vehicle -->
+            <div class="step-label"><span class="step-num">2</span> เลือกรถยนต์</div>
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">🚗 รถที่ต้องการซ่อม</h3>
-                </div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="vehicleSelect" class="form-label">เลือกรถยนต์</label>
-                        <select id="vehicleSelect" class="form-control" required>
-                            <!-- Will be populated -->
-                        </select>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="vehicleSelect" class="form-label">รถที่ต้องการซ่อม</label>
+                        <select id="vehicleSelect" class="form-control" required></select>
                     </div>
                 </div>
             </div>
 
-            <!-- Problem Description -->
+            <!-- Step 3: Problem -->
+            <div class="step-label"><span class="step-num">3</span> อธิบายปัญหา</div>
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">📝 อาการและปัญหา</h3>
-                </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="symptoms" class="form-label">อธิบายอาการหรือปัญหาที่พบ</label>
-                        <textarea id="symptoms" class="form-control" rows="4"
+                        <label for="symptoms" class="form-label">อาการ / ปัญหาที่พบ</label>
+                        <textarea id="symptoms" class="form-control" rows="3"
                             placeholder="เช่น: เครื่องยนต์ดับกะทันหัน มีเสียงผิดปกติ แอร์ไม่เย็น..."
                             required></textarea>
                     </div>
-
-                    <!-- Photo/Video Upload with Image Optimizer -->
-                    <div class="form-group">
-                        <label class="form-label">อัปโหลดรูปภาพหรือวิดีโอ (ไม่จำเป็น)</label>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">แนบรูปภาพ (ไม่บังคับ)</label>
                         <input type="file" id="problemImages" class="form-control" accept="image/*,video/*" multiple
                             onchange="handleImageUpload(event)">
-                        <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.5rem;">
-                            รองรับ JPG, PNG, WebP ขนาดไม่เกิน 2MB ต่อไฟล์
-                        </p>
+                        <p class="text-muted" style="font-size: 0.78rem; margin-top: 0.35rem;">รองรับ JPG, PNG, WebP
+                            สูงสุด 2MB ต่อไฟล์</p>
                     </div>
-
-                    <!-- Upload Preview -->
                     <div id="uploadPreview"></div>
                 </div>
             </div>
 
-            <!-- Date and Time (for scheduled only) -->
-            <div class="card mb-4 d-none" id="scheduleSection">
-                <div class="card-header">
-                    <h3 class="card-title">📅 วันและเวลาที่ต้องการ</h3>
-                </div>
-                <div class="card-body">
-                    <div class="grid grid-2">
-                        <div class="form-group">
-                            <label for="scheduleDate" class="form-label">วันที่</label>
-                            <input type="date" id="scheduleDate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="scheduleTime" class="form-label">เวลา</label>
-                            <input type="time" id="scheduleTime" class="form-control">
+            <!-- Step 4: Date/Time (scheduled only) -->
+            <div id="scheduleSection" class="d-none">
+                <div class="step-label"><span class="step-num">4</span> เลือกวันเวลา</div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="grid grid-2">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="scheduleDate" class="form-label">วันที่</label>
+                                <input type="date" id="scheduleDate" class="form-control">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="scheduleTime" class="form-label">เวลา</label>
+                                <input type="time" id="scheduleTime" class="form-control">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Location -->
+            <!-- Step: Location -->
+            <div class="step-label"><span class="step-num" id="locationStep">4</span> ตำแหน่งที่อยู่</div>
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">📍 สถานที่</h3>
-                </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="location" class="form-label">ที่อยู่</label>
-                        <textarea id="location" class="form-control" rows="3"
-                            placeholder="ที่อยู่ที่ต้องการให้ช่างมาซ่อม" required></textarea>
+                        <label for="location" class="form-label">ที่อยู่ / จุดที่รถเสีย</label>
+                        <textarea id="location" class="form-control" rows="2"
+                            placeholder="ที่อยู่ที่ต้องการให้ช่างมาถึง" required></textarea>
                     </div>
-
-                    <button type="button" class="btn btn-outline" onclick="getCurrentLocation()">
-                        📍 ใช้ตำแหน่งปัจจุบัน (GPS)
+                    <button type="button" class="btn btn-outline btn-sm" onclick="getCurrentLocation()">
+                        📍 ใช้ตำแหน่ง GPS ปัจจุบัน
                     </button>
                 </div>
             </div>
 
-            <!-- Mechanic Preference (Optional) -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="card-title">🔧 เลือกช่างซ่อม (ไม่บังคับ)</h3>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="mechanicSelect" class="form-label">เลือกช่างที่ต้องการ</label>
-                        <select id="mechanicSelect" class="form-control">
-                            <option value="">ให้ระบบจับคู่ช่างที่เหมาะสมอัตโนมัติ</option>
-                            <!-- Will be populated -->
-                        </select>
+            <!-- Step: Mechanic (scheduled only) -->
+            <div id="mechanicSection" class="d-none">
+                <div class="step-label"><span class="step-num">5</span> เลือกช่างซ่อม</div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 0.75rem;">
+                            ช่างจะรับงานและยืนยันกลับมาหาคุณ</p>
+                        <div class="form-group" style="margin-bottom: 0.5rem;">
+                            <label for="mechanicSelect" class="form-label">เลือกช่าง</label>
+                            <select id="mechanicSelect" class="form-control"></select>
+                        </div>
+                        <a href="mechanics.html"
+                            style="font-size: 0.8rem; color: var(--brand-primary);">ดูโปรไฟล์ช่างทั้งหมด →</a>
                     </div>
                 </div>
             </div>
 
             <!-- Summary -->
-            <div class="card mb-4" style="background: var(--bg-light);">
-                <div class="card-header">
-                    <h3 class="card-title">📋 สรุป</h3>
-                </div>
+            <div class="card mb-4" style="background: var(--bg-subtle); border: 1.5px solid var(--border-strong);">
                 <div class="card-body">
-                    <p><strong>ประเภทบริการ:</strong> <span id="summaryType">ฉุกเฉิน</span></p>
-                    <p><strong>รถยนต์:</strong> <span id="summaryVehicle">-</span></p>
-                    <p><strong>ราคาเริ่มต้นโดยประมาณ:</strong> <span class="text-primary" id="summaryPrice">500-1,500
-                            บาท</span></p>
-                    <p class="mb-0" id="summarySchedule" class="d-none"><strong>วันและเวลา:</strong> <span
-                            id="summaryDateTime">-</span></p>
+                    <h4 style="margin-bottom: 0.75rem; font-size: 0.9rem;">📋 สรุปการจอง</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-muted">ประเภท</span>
+                            <strong id="summaryType">ฉุกเฉิน</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-muted">รถยนต์</span>
+                            <strong id="summaryVehicle">—</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-muted">ราคาเริ่มต้น</span>
+                            <strong style="color: var(--brand-primary);" id="summaryPrice">500–1,500 บาท</strong>
+                        </div>
+                        <div id="summarySchedule" class="d-none" style="display: flex; justify-content: space-between;">
+                            <span class="text-muted">วันเวลา</span>
+                            <strong id="summaryDateTime">—</strong>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
-                    🚨 ยืนยันการเรียกช่างฉุกเฉิน
-                </button>
-            </div>
+            <!-- Submit -->
+            <button type="submit" class="btn btn-emergency btn-block btn-lg" id="submitBtn">
+                🚨 แจ้งเหตุฉุกเฉิน — ระบบจัดการให้
+            </button>
         </form>
     </main>
 
-    <!-- Scripts -->
     <script src="../js/app.js"></script>
-    <script src="imageOptimizer.js"></script>
+    <script src="../js/imageOptimizer.js"></script>
     <script>
+
         let serviceType = 'emergency';
         let uploadedImages = [];
 
@@ -202,16 +305,15 @@
             populateVehicleSelect();
             populateMechanicSelect();
             updateSummary();
+            updateServiceType('emergency');
         });
 
         function populateVehicleSelect() {
             const select = document.getElementById('vehicleSelect');
             const vehicles = mockData.vehicles.filter(v => v.ownerId === appState.currentUser.userId);
-
             select.innerHTML = vehicles.map(v =>
-                `<option value="${v.vehicleId}">${v.make} ${v.model} (${v.year}) - ${v.licensePlate}</option>`
+                `<option value="${v.vehicleId}">${v.make} ${v.model} (${v.year}) — ${v.licensePlate}</option>`
             ).join('');
-
             select.addEventListener('change', updateSummary);
             updateSummary();
         }
@@ -219,12 +321,10 @@
         function populateMechanicSelect() {
             const select = document.getElementById('mechanicSelect');
             const mechanics = mockData.mechanics.filter(m => m.available);
-
             const options = mechanics.map(m =>
-                `<option value="${m.mechanicId}">${m.name} - ${utils.formatCurrency(m.startingPrice)} (${m.rating}⭐)</option>`
+                `<option value="${m.mechanicId}">${m.name} — ${utils.formatCurrency(m.startingPrice)} (${m.rating}⭐)</option>`
             ).join('');
-
-            select.innerHTML = '<option value="">ให้ระบบจับคู่ช่างที่เหมาะสมอัตโนมัติ</option>' + options;
+            select.innerHTML = '<option value="">ให้ระบบจับคู่อัตโนมัติ</option>' + options;
         }
 
         function updateServiceType(type) {
@@ -233,36 +333,45 @@
             const submitBtn = document.getElementById('submitBtn');
             const emergencyCard = document.getElementById('emergencyCard');
             const scheduledCard = document.getElementById('scheduledCard');
+            const mechanicSection = document.getElementById('mechanicSection');
+            const emergencyInfoBox = document.getElementById('emergencyInfoBox');
+            const locationStep = document.getElementById('locationStep');
 
             if (type === 'emergency') {
                 scheduleSection.classList.add('d-none');
                 document.getElementById('scheduleDate').required = false;
                 document.getElementById('scheduleTime').required = false;
-                submitBtn.innerHTML = '🚨 ยืนยันการเรียกช่างฉุกเฉิน';
-                emergencyCard.style.border = '2px solid var(--danger)';
-                scheduledCard.style.border = 'none';
+                submitBtn.innerHTML = '🚨 แจ้งเหตุฉุกเฉิน — ระบบจัดการให้';
+                submitBtn.className = 'btn btn-emergency btn-block btn-lg';
+                emergencyCard.classList.add('selected-emergency');
+                emergencyCard.classList.remove('selected-scheduled');
+                scheduledCard.classList.remove('selected-emergency', 'selected-scheduled');
+                mechanicSection.classList.add('d-none');
+                emergencyInfoBox.classList.remove('d-none');
+                locationStep.textContent = '4';
             } else {
                 scheduleSection.classList.remove('d-none');
                 document.getElementById('scheduleDate').required = true;
                 document.getElementById('scheduleTime').required = true;
                 submitBtn.innerHTML = '📅 ยืนยันการนัดหมาย';
-                emergencyCard.style.border = 'none';
-                scheduledCard.style.border = '2px solid var(--steel-blue)';
+                submitBtn.className = 'btn btn-primary btn-block btn-lg';
+                scheduledCard.classList.add('selected-scheduled');
+                scheduledCard.classList.remove('selected-emergency');
+                emergencyCard.classList.remove('selected-emergency', 'selected-scheduled');
+                mechanicSection.classList.remove('d-none');
+                emergencyInfoBox.classList.add('d-none');
+                locationStep.textContent = '5';
             }
-
             updateSummary();
         }
 
         function updateSummary() {
             document.getElementById('summaryType').textContent = serviceType === 'emergency' ? 'ฉุกเฉิน' : 'นัดหมายล่วงหน้า';
-
             const vehicleSelect = document.getElementById('vehicleSelect');
             const selectedVehicle = mockData.vehicles.find(v => v.vehicleId === vehicleSelect.value);
             if (selectedVehicle) {
-                document.getElementById('summaryVehicle').textContent =
-                    `${selectedVehicle.make} ${selectedVehicle.model} (${selectedVehicle.year})`;
+                document.getElementById('summaryVehicle').textContent = `${selectedVehicle.make} ${selectedVehicle.model} (${selectedVehicle.year})`;
             }
-
             if (serviceType === 'scheduled') {
                 document.getElementById('summarySchedule').classList.remove('d-none');
                 const date = document.getElementById('scheduleDate').value;
@@ -278,111 +387,73 @@
         async function handleImageUpload(event) {
             const files = event.target.files;
             if (files.length === 0) return;
-
             const preview = document.getElementById('uploadPreview');
-            preview.innerHTML = '<p class="text-muted">กำลังประมวลผลรูปภาพ...</p>';
-
-            // Optimize images
-            const results = await imageOptimizer.optimizeMultiple(files, 'beforeAfter', (progress) => {
-                preview.innerHTML = `<p class="text-muted">กำลังประมวลผลรูปภาพ... ${progress}%</p>`;
-            });
-
-            // Display previews
-            let html = '';
-            results.forEach((result, index) => {
-                html += imageOptimizer.getPreviewHTML(result);
-                if (result.success) {
-                    uploadedImages.push(result);
-                }
-            });
-
-            preview.innerHTML = html;
-
-            if (uploadedImages.length > 0) {
-                utils.showNotification(`อัปโหลดรูปภาพ ${uploadedImages.length} ไฟล์สำเร็จ`, 'success');
+            preview.innerHTML = '<p class="text-muted">กำลังประมวลผล...</p>';
+            try {
+                const results = await imageOptimizer.optimizeMultiple(files, 'beforeAfter', (p) => {
+                    preview.innerHTML = `<p class="text-muted">กำลังประมวลผล ${p}%</p>`;
+                });
+                let html = '';
+                results.forEach((result) => {
+                    html += imageOptimizer.getPreviewHTML(result);
+                    if (result.success) uploadedImages.push(result);
+                });
+                preview.innerHTML = html;
+                if (uploadedImages.length > 0) utils.showNotification(`อัปโหลด ${uploadedImages.length} ไฟล์สำเร็จ`, 'success');
+            } catch (e) {
+                preview.innerHTML = '';
             }
         }
 
         function getCurrentLocation() {
-            if (!navigator.geolocation) {
-                utils.showNotification('เบราว์เซอร์ของคุณไม่รองรับ GPS', 'error');
-                return;
-            }
-
+            if (!navigator.geolocation) { utils.showNotification('เบราว์เซอร์ไม่รองรับ GPS', 'error'); return; }
             utils.showNotification('กำลังค้นหาตำแหน่ง...', 'info');
-
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    document.getElementById('location').value =
-                        `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n(ตำแหน่งปัจจุบัน - กรุณาเพิ่มรายละเอียดที่อยู่)`;
-                    utils.showNotification('ดึงตำแหน่งสำเร็จ!', 'success');
+                    document.getElementById('location').value = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}\n(กรุณาเพิ่มรายละเอียดที่อยู่)`;
+                    utils.showNotification('ดึงตำแหน่งสำเร็จ', 'success');
                 },
-                (error) => {
-                    utils.showNotification('ไม่สามารถดึงตำแหน่งได้: ' + error.message, 'error');
-                }
+                (error) => { utils.showNotification('ดึงตำแหน่งไม่ได้: ' + error.message, 'error'); }
             );
         }
 
-
         function handleBooking(event) {
             event.preventDefault();
-
             const vehicleId = document.getElementById('vehicleSelect').value;
-            const mechanicId = document.getElementById('mechanicSelect').value || null;
+            const mechanicId = serviceType === 'emergency' ? null : (document.getElementById('mechanicSelect').value || null);
             const symptoms = document.getElementById('symptoms').value;
             const location = document.getElementById('location').value;
             const scheduleDate = serviceType === 'scheduled' ? document.getElementById('scheduleDate').value : null;
             const scheduleTime = serviceType === 'scheduled' ? document.getElementById('scheduleTime').value : null;
 
-            // Get vehicle info
-            const vehicle = mockData.vehicles.find(v => v.vehicleId === vehicleId);
-
-            // Create new job
             const newJob = {
                 jobId: 'J' + String(mockData.jobs.length + 1).padStart(3, '0'),
                 customerId: appState.currentUser.userId,
                 customerName: appState.currentUser.name,
                 customerPhone: appState.currentUser.phone,
-                vehicleId: vehicleId,
-                mechanicId: mechanicId,
-                serviceType: serviceType,
-                symptoms: symptoms,
-                location: location,
-                locationGPS: null, // Could be populated if using GPS
-                status: mechanicId ? 'accepted' : 'pending', // If mechanic selected, auto-accept
+                vehicleId, mechanicId, serviceType, symptoms, location,
+                locationGPS: null,
+                status: mechanicId ? 'accepted' : 'pending',
                 requestDate: new Date().toISOString(),
                 acceptedDate: mechanicId ? new Date().toISOString() : null,
                 completedDate: null,
                 scheduledDate: scheduleDate && scheduleTime ? `${scheduleDate}T${scheduleTime}:00` : null,
                 images: uploadedImages,
-                partsCost: null,
-                laborCost: null,
-                totalCost: null,
-                mechanicNotes: null,
-                partsUsed: []
+                partsCost: null, laborCost: null, totalCost: null,
+                mechanicNotes: null, partsUsed: []
             };
-
-            // Add to mockData.jobs
             mockData.jobs.push(newJob);
-
-            // Save to localStorage
             localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
-
             utils.showNotification('กำลังส่งคำขอ...', 'info');
-
-            // Simulate booking process
             setTimeout(() => {
                 utils.showNotification(
                     serviceType === 'emergency'
-                        ? `ส่งคำขอสำเร็จ! (Job ID: ${newJob.jobId}) ช่างจะติดต่อกลับภายใน 5-10 นาที`
-                        : `นัดหมายสำเร็จ! (Job ID: ${newJob.jobId}) เราจะแจ้งเตือนก่อนถึงเวลานัดหมาย`,
+                        ? `ส่งคำขอสำเร็จ (${newJob.jobId}) คอลเซ็นเตอร์จะติดต่อกลับภายใน 5 นาที`
+                        : `นัดหมายสำเร็จ (${newJob.jobId}) เราจะแจ้งเตือนก่อนถึงเวลา`,
                     'success'
                 );
-
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 2000);
+                setTimeout(() => { window.location.href = '../index.html'; }, 2000);
             }, 1500);
         }
     </script>

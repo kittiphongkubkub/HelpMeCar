@@ -7,54 +7,270 @@
     <meta name="description"
         content="HelpMeCar - บริการช่างซ่อมรถฉุกเฉิน 24/7 พร้อมบริการซื้ออะไหล่และปรึกษาผู้เชี่ยวชาญ">
     <meta name="keywords" content="ซ่อมรถ, ช่างซ่อมรถ, ซ่อมรถฉุกเฉิน, อะไหล่รถ, บำรุงรักษารถ">
-    <meta name="author" content="HelpMeCar">
     <title>HelpMeCar - แดชบอร์ด</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Page-specific styles */
+        .hero-banner {
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 60%, #0EA5E9 100%);
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-banner::after {
+            content: '🚗';
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5rem;
+            opacity: 0.12;
+        }
+
+        .hero-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        /* Emergency action row */
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.25rem 1rem;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            text-align: center;
+            min-height: 90px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .action-btn .action-icon {
+            font-size: 1.75rem;
+        }
+
+        .action-btn .action-sub {
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        .action-emergency {
+            background: linear-gradient(135deg, #DC2626, #EF4444);
+            color: white;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .action-call {
+            background: linear-gradient(135deg, #D97706, #F59E0B);
+            color: white;
+            box-shadow: 0 6px 20px rgba(217, 119, 6, 0.3);
+        }
+
+        /* Vehicle card */
+        .vehicle-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar-track {
+            background: var(--bg-muted);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        /* Service grid */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .service-item:hover {
+            border-color: var(--brand-primary);
+            background: var(--brand-light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12);
+        }
+
+        .service-icon {
+            font-size: 2rem;
+        }
+
+        .service-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        /* Section header */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.85rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .section-link {
+            font-size: 0.8rem;
+            color: var(--brand-primary);
+            font-weight: 600;
+        }
+
+        /* Reminders */
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .reminder-item:last-child {
+            border-bottom: none;
+        }
+
+        .reminder-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .reminder-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .reminder-text strong {
+            color: var(--text-primary);
+            display: block;
+        }
+
+        /* Recent service */
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 600px) {
+            .hero-banner {
+                padding: 1.5rem;
+            }
+
+            .service-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .action-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .service-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Skip Navigation for Accessibility -->
+    <!-- Skip Nav -->
     <a href="#main-content" class="skip-nav">ข้ามไปยังเนื้อหาหลัก</a>
 
-    <!-- Navigation Bar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
-                <span>🔧</span> HelpMeCar
+                🔧 HelpMeCar
             </a>
 
-            <button class="navbar-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
             </button>
 
-            <ul class="navbar-menu">
-                <!-- Home -->
-                <li class="nav-item">
-                    <a href="index.html" class="navbar-link active">หน้าหลัก</a>
-                </li>
-
-                <!-- My Car Items -->
-                <li class="nav-item"><a href="pages/vehicles.html" class="navbar-link">จัดการรถยนต์</a></li>
-                <li class="nav-item"><a href="pages/history.html" class="navbar-link">ประวัติการซ่อม</a></li>
-                <li class="nav-item"><a href="pages/booking.html" class="navbar-link">การจอง</a></li>
-
+            <ul class="navbar-menu" id="navMenu">
+                <li><a href="index.html" class="navbar-link active">หน้าหลัก</a></li>
+                <li><a href="pages/vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="pages/history.html" class="navbar-link">ประวัติซ่อม</a></li>
+                <li><a href="pages/booking.html" class="navbar-link">จองซ่อม</a></li>
                 <li class="navbar-divider"></li>
+                <li><a href="pages/mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="pages/store.html" class="navbar-link">ร้านอะไหล่</a></li>
+                <li><a href="pages/insurance-rental.html" class="navbar-link">ประกัน/พรบ</a></li>
+                <li><a href="pages/consultation.html" class="navbar-link">AI ปรึกษา</a></li>
 
-                <!-- Services Items -->
-                <li class="nav-item"><a href="pages/mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
-                <li class="nav-item"><a href="pages/tow-service.html" class="navbar-link">รถลาก</a></li>
-                <li class="nav-item"><a href="pages/store.html" class="navbar-link">ร้านค้า</a></li>
-                <li class="nav-item"><a href="pages/consultation.html" class="navbar-link">AI ปรึกษา</a></li>
-
-                <!-- Right Actions -->
                 <li class="navbar-actions">
-                    <a href="pages/mechanic-dashboard.html" class="btn-nav-cta">
-                        🔧 โหมดช่าง
-                    </a>
+                    <a href="pages/mechanic-dashboard.html" class="btn-nav-cta">🔧 โหมดช่าง</a>
                     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                        <span class="icon" id="themeIcon">🌙</span>
+                        <span id="themeIcon">🌙</span>
                     </button>
                 </li>
             </ul>
@@ -63,163 +279,124 @@
 
     <!-- Main Content -->
     <main id="main-content" class="container section">
-        <!-- Welcome Section -->
-        <div class="card card-glass mb-3">
-            <div class="card-body">
-                <h2 class="mb-2"
-                    style="background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700;">
-                    สวัสดีคุณ <span id="userName">...</span> 👋</h2>
-                <p class="text-muted">ยินดีต้อนรับสู่ HelpMeCar - บริการช่างซ่อมรถออนไลน์ 24/7</p>
-                <div class="security-indicator mt-2">
-                    🔒 ข้อมูลของคุณได้รับการเข้ารหัสและปลอดภัย
+
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div>
+                <p class="hero-title">สวัสดีคุณ <span id="userName">ผู้ใช้</span> 👋</p>
+                <p class="hero-subtitle">ยินดีต้อนรับสู่ HelpMeCar — บริการซ่อมรถออนไลน์ 24/7</p>
+                <div
+                    style="margin-top: 0.75rem; display: inline-flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.15); padding: 0.3rem 0.75rem; border-radius: 99px; font-size: 0.75rem; color: white;">
+                    🔒 ข้อมูลของคุณปลอดภัยและเข้ารหัสแล้ว
                 </div>
             </div>
         </div>
 
-        <!-- Emergency Call Buttons -->
-        <div class="grid grid-2 gap-3 mb-4">
-            <!-- Emergency Mechanic Button -->
-            <div class="text-center">
-                <a href="pages/booking.html?type=emergency" class="btn btn-emergency btn-xl">
-                    <span style="display: inline-block; animation: float 2s ease-in-out infinite;">🚨</span>
-                    เรียกช่างฉุกเฉิน
-                </a>
-                <p class="text-muted mt-2">ช่างจะมาถึงภายใน 30-60 นาที</p>
-                <div class="trust-badge mt-2">
-                    ✓ บริการตรงเวลา การันตีคุณภาพ
-                </div>
-            </div>
-
-            <!-- Emergency Tow Truck Button -->
-            <div class="text-center">
-                <a href="pages/tow-service.html" class="btn btn-xl"
-                    style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);">
-                    <span style="display: inline-block; animation: float 2s ease-in-out infinite 0.5s;">🚛</span>
-                    เรียกรถลาก
-                </a>
-                <p class="text-muted mt-2">รถลากจะมาถึงภายใน 10-30 นาที</p>
-                <div class="trust-badge mt-2"
-                    style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1)); color: #D97706;">
-                    ✓ บริการฉุกเฉิน 24/7
-                </div>
-            </div>
+        <!-- Emergency Actions -->
+        <div class="action-row">
+            <a href="pages/booking.html?type=emergency" class="action-btn action-emergency">
+                <span class="action-icon">🚨</span>
+                <span>เรียกช่างฉุกเฉิน</span>
+                <span class="action-sub">ช่างถึงใน 30-60 นาที</span>
+            </a>
+            <a href="tel:02999888" class="action-btn action-call">
+                <span class="action-icon">📞</span>
+                <span>คอลเซ็นเตอร์</span>
+                <span class="action-sub">02-999-888 ตลอด 24 ชม.</span>
+            </a>
         </div>
 
-        <!-- Current Vehicle Status -->
-        <div class="card card-glass mb-4">
+        <!-- Vehicle Status -->
+        <div class="card mb-4">
             <div class="card-header">
-                <h3 class="card-title"><span
-                        style="animation: float 3s ease-in-out infinite; display: inline-block;">🚗</span> รถของคุณ</h3>
+                <h3 class="card-title">🚗 รถของฉัน</h3>
+                <div id="vehicleSelectorContainer"></div>
             </div>
-            <div class="card-body">
-                <div id="vehicleInfo">
-                    <!-- Vehicle Selector (if multiple vehicles) -->
-                    <div class="mb-3" id="vehicleSelectorContainer"></div>
-
-                    <div class="flex-between mb-2">
-                        <div>
-                            <h4 id="vehicleName" class="mb-1">กำลังโหลด...</h4>
-                            <p class="text-muted" id="vehiclePlate">-</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-muted">เลขไมล์ปัจจุบัน</p>
-                            <h4 id="vehicleMileage">-</h4>
-                        </div>
+            <div class="card-body" id="vehicleInfo">
+                <div class="vehicle-info-row mb-3">
+                    <div>
+                        <h4 id="vehicleName" style="margin-bottom: 0.1rem;">กำลังโหลด...</h4>
+                        <p class="text-muted" id="vehiclePlate" style="font-size: 0.85rem; margin: 0;">—</p>
                     </div>
-
-                    <!-- Maintenance Progress Bar -->
-                    <div class="mt-3">
-                        <div class="flex-between mb-1">
-                            <span class="text-muted">ระยะทางถึงการบำรุงรักษาครั้งถัดไป</span>
-                            <span class="text-primary" id="mileageRemaining">-</span>
-                        </div>
-                        <div style="background: var(--bg-grey); height: 8px; border-radius: 4px; overflow: hidden;">
-                            <div id="mileageProgress"
-                                style="background: var(--steel-blue); height: 100%; width: 0%; transition: width 0.5s;">
-                            </div>
-                        </div>
+                    <div style="text-align: right;">
+                        <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 0.1rem;">เลขไมล์</p>
+                        <strong id="vehicleMileage" style="font-size: 1.1rem;">—</strong>
+                    </div>
+                </div>
+                <div>
+                    <div
+                        style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+                        <span class="text-muted">ถึงซ่อมบำรุงครั้งถัดไป</span>
+                        <span style="color: var(--brand-primary); font-weight: 600;" id="mileageRemaining">—</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-bar-fill" id="mileageProgress" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-outline btn-sm" onclick="viewVehicleDetails()">ดูรายละเอียดรถ</button>
-                <button class="btn btn-outline btn-sm" onclick="scheduleService()">นัดหมายซ่อมบำรุง</button>
+                <button class="btn btn-outline btn-sm" onclick="viewVehicleDetails()">ดูรายละเอียด</button>
+                <button class="btn btn-outline btn-sm" onclick="scheduleService()">นัดซ่อมบำรุง</button>
             </div>
+        </div>
+
+        <!-- Service Menu -->
+        <div class="section-header">
+            <h3 class="section-title">บริการของเรา</h3>
+        </div>
+        <div class="service-grid mb-4">
+            <a href="pages/mechanics.html" class="service-item">
+                <span class="service-icon">🔧</span>
+                <span class="service-label">หาช่างซ่อม</span>
+            </a>
+            <a href="pages/booking.html" class="service-item">
+                <span class="service-icon">📅</span>
+                <span class="service-label">จองซ่อม</span>
+            </a>
+            <a href="pages/store.html" class="service-item">
+                <span class="service-icon">🛒</span>
+                <span class="service-label">ร้านอะไหล่</span>
+            </a>
+            <a href="pages/insurance-rental.html" class="service-item">
+                <span class="service-icon">🛡️</span>
+                <span class="service-label">ประกัน / พรบ</span>
+            </a>
+            <a href="pages/insurance-rental.html#rental" class="service-item">
+                <span class="service-icon">🚗</span>
+                <span class="service-label">เช่ารถ</span>
+            </a>
+            <a href="pages/consultation.html" class="service-item">
+                <span class="service-icon">💬</span>
+                <span class="service-label">AI ปรึกษา</span>
+            </a>
         </div>
 
         <!-- Maintenance Reminders -->
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="card-title">⏰ การแจ้งเตือนบำรุงรักษา</h3>
+                <h3 class="card-title">⏰ แจ้งเตือนบำรุงรักษา</h3>
             </div>
-            <div class="card-body">
-                <div id="reminders">
-                    <!-- Reminders will be populated here -->
-                </div>
+            <div class="card-body" id="reminders">
+                <p class="text-muted" style="text-align: center; padding: 1rem 0; margin: 0;">กำลังโหลด...</p>
             </div>
         </div>
 
-        <!-- Quick Actions Grid -->
-        <h3 class="mb-3">บริการของเรา</h3>
-        <div class="grid grid-2 mb-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite;">🔧
-                    </div>
-                    <h4 class="mb-2">ค้นหาช่างซ่อม</h4>
-                    <p class="text-muted mb-3">เลือกช่างที่เหมาะสมกับปัญหาของคุณ</p>
-                    <a href="pages/mechanics.html" class="btn btn-primary">ดูช่างทั้งหมด</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.3s;">🛒
-                    </div>
-                    <h4 class="mb-2">ร้านอะไหล่</h4>
-                    <p class="text-muted mb-3">สั่งซื้ออะไหล่ที่เข้ากับรถของคุณ</p>
-                    <a href="pages/store.html" class="btn btn-primary">เข้าสู่ร้านค้า</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.6s;">📋
-                    </div>
-                    <h4 class="mb-2">ประวัติการซ่อม</h4>
-                    <p class="text-muted mb-3">ดูบันทึกการซ่อมและค่าใช้จ่าย</p>
-                    <a href="pages/history.html" class="btn btn-primary">ดูประวัติ</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body text-center">
-                    <div style="font-size: 3rem; margin-bottom: 1rem; animation: float 3s ease-in-out infinite 0.9s;">💬
-                    </div>
-                    <h4 class="mb-2">ปรึกษาผู้เชี่ยวชาญ</h4>
-                    <p class="text-muted mb-3">AI ช่วยวินิจฉัยปัญหารถของคุณ</p>
-                    <a href="pages/consultation.html" class="btn btn-primary">เริ่มปรึกษา</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Service History (Brief) -->
+        <!-- Recent History -->
         <div class="card">
-            <div class="card-header flex-between">
+            <div class="card-header">
                 <h3 class="card-title">📜 การซ่อมล่าสุด</h3>
-                <a href="history.html" class="text-primary">ดูทั้งหมด →</a>
+                <a href="pages/history.html" class="section-link">ดูทั้งหมด →</a>
             </div>
-            <div class="card-body">
-                <div id="recentServices">
-                    <!-- Recent services will be populated here -->
-                </div>
+            <div class="card-body" id="recentServices">
+                <p class="text-muted" style="text-align: center; padding: 1rem 0; margin: 0;">กำลังโหลด...</p>
             </div>
         </div>
+
     </main>
 
-    <!-- Scripts -->
     <script src="js/app.js"></script>
     <script src="js/dashboard.js"></script>
+
 </body>
 
 </html>

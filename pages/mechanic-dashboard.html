@@ -4,106 +4,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="แดชบอร์ดช่างซ่อมรถ - HelpMeCar">
     <title>Dashboard ช่าง - HelpMeCar</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/mechanic.css">
+    <style>
+        /* Job card for mechanic view */
+        .job-request-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .job-request-card.emergency {
+            border-left: 4px solid var(--danger);
+        }
+
+        .job-request-card.scheduled {
+            border-left: 4px solid var(--brand-primary);
+        }
+
+        .job-request-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin: 0.4rem 0 0.75rem;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Stat card */
+        .dash-stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+        }
+
+        .dash-stat-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-top: 0.25rem;
+        }
+
+        /* Online indicator */
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(22, 163, 74, 0.1);
+            }
+        }
+
+        .offline-dot {
+            background: var(--text-muted);
+            animation: none;
+            box-shadow: none;
+        }
+
+        /* Info banner */
+        .info-banner {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            background: var(--brand-light);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 0.875rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .info-banner strong {
+            color: var(--brand-primary);
+            display: block;
+        }
+
+        .info-banner p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="mechanic-dashboard.html" class="navbar-brand">
-                🔧 HelpMeCar
-            </a>
-            <button class="navbar-toggle" aria-label="Toggle menu">
+            <a href="mechanic-dashboard.html" class="navbar-brand">🔧 HelpMeCar</a>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
-            <ul class="navbar-menu">
+            <ul class="navbar-menu" id="navMenu">
                 <li><a href="mechanic-dashboard.html" class="navbar-link active">Dashboard</a></li>
                 <li><a href="mechanic-jobs.html" class="navbar-link">งานทั้งหมด</a></li>
                 <li class="navbar-divider"></li>
-                <li><a href="../index.html" class="navbar-link" style="background: linear-gradient(135deg, #10B981, #059669); 
-                           color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;">
-                        🚗 โหมดเจ้าของ
-                    </a></li>
                 <li>
+                    <a href="../index.html" class="navbar-link" style="color: var(--success); font-weight: 700;">
+                        🚗 โหมดเจ้าของรถ
+                    </a>
+                </li>
+                <li class="navbar-actions">
                     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                        <span class="icon" id="themeIcon">🌙</span>
+                        <span id="themeIcon">🌙</span>
                     </button>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="container section">
-        <div class="flex-between mb-4">
+
+        <!-- Header -->
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
             <div>
-                <h1 class="mb-0" style="font-size: 1.75rem;">🔧 Dashboard</h1>
-                <p class="text-muted mb-0" id="mechanicName">กำลังโหลด...</p>
+                <h1 style="font-size: 1.5rem; margin-bottom: 0.1rem;">🔧 Dashboard ช่าง</h1>
+                <p class="text-muted" style="font-size: 0.875rem; margin: 0;" id="mechanicName">กำลังโหลด...</p>
             </div>
-            <div class="text-end">
-                <span class="badge badge-appointment" style="font-size: 0.9rem;">ออนไลน์</span>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600;">
+                    <span class="online-dot" id="statusDot"></span>
+                    <span id="statusText">ออนไลน์</span>
+                </div>
+                <button class="btn btn-outline btn-sm" id="toggleStatusBtn" onclick="toggleOnlineStatus()">
+                    ⏸️ หยุดรับงาน
+                </button>
             </div>
         </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-2 gap-3 mb-4">
-            <div class="stat-card bg-gradient-blue">
-                <div class="card-body">
-                    <p class="stat-title">งานวันนี้</p>
-                    <h2 class="stat-value" id="todayJobs">0</h2>
-                </div>
-            </div>
-            <div class="stat-card bg-gradient-green">
-                <div class="card-body">
-                    <p class="stat-title">รายได้เดือนนี้</p>
-                    <h2 class="stat-value" id="monthlyEarnings">฿0</h2>
-                </div>
-            </div>
-            <div class="stat-card bg-gradient-orange">
-                <div class="card-body">
-                    <p class="stat-title">Rating</p>
-                    <h2 class="stat-value" id="mechanicRating">0.0 ⭐</h2>
-                </div>
-            </div>
-            <div class="stat-card bg-gradient-purple">
-                <div class="card-body">
-                    <p class="stat-title">งานสำเร็จ</p>
-                    <h2 class="stat-value" id="completedJobs">0</h2>
-                </div>
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <span style="font-size: 1.5rem;">📲</span>
+            <div>
+                <strong>ระบบส่งงานมาหาคุณโดยอัตโนมัติ</strong>
+                <p>คุณไม่ต้องหาลูกค้าเอง — ลูกค้าเลือกคุณสำหรับงานนัดหมาย และระบบส่งงานฉุกเฉินมาตรงๆ</p>
             </div>
         </div>
 
-        <!-- New Job Requests -->
-        <div class="mb-4">
-            <div class="flex-between mb-3">
-                <h3 class="h5 mb-0">🆕 งานใหม่ที่รอรับ</h3>
-                <a href="mechanic-jobs.html" class="text-muted" style="font-size: 0.9rem;">ดูทั้งหมด ></a>
+        <!-- Stats Row -->
+        <div class="grid grid-4 gap-3 mb-4">
+            <div class="dash-stat bg-gradient-blue">
+                <p class="stat-title">งานวันนี้</p>
+                <div class="dash-stat-val" id="todayJobs">0</div>
             </div>
-            <div id="pendingJobsList" class="grid grid-1 gap-3">
-                <!-- Javascript will populate this -->
-                <div class="text-center py-4 text-muted bg-white rounded-lg shadow-sm">
-                    <p>ไม่มีงานใหม่ในขณะนี้</p>
-                </div>
+            <div class="dash-stat bg-gradient-green">
+                <p class="stat-title">รายได้เดือนนี้</p>
+                <div class="dash-stat-val" id="monthlyEarnings">฿0</div>
+            </div>
+            <div class="dash-stat bg-gradient-orange">
+                <p class="stat-title">คะแนน</p>
+                <div class="dash-stat-val" id="mechanicRating">0 ⭐</div>
+            </div>
+            <div class="dash-stat bg-gradient-purple">
+                <p class="stat-title">งานสำเร็จ</p>
+                <div class="dash-stat-val" id="completedJobs">0</div>
+            </div>
+        </div>
+
+        <!-- Pending Jobs -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">🔔 งานใหม่ที่รอคุณรับ</h3>
+            <span class="badge badge-danger" id="pendingCountBadge">0</span>
+        </div>
+        <div id="pendingJobsList" style="margin-bottom: 2rem;">
+            <div
+                style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
+                <p style="font-weight: 600; margin-bottom: 0.1rem;">รองานเข้ามา...</p>
+                <p class="text-muted" style="font-size: 0.8rem; margin: 0;">ระบบจะแจ้งเตือนเมื่อมีงานใหม่</p>
             </div>
         </div>
 
         <!-- Active Jobs -->
-        <div class="mb-4">
-            <div class="flex-between mb-3">
-                <h3 class="h5 mb-0">⚡ งานที่กำลังทำ</h3>
-            </div>
-            <div id="activeJobsList" class="grid grid-1 gap-3">
-                <!-- Javascript will populate this -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">⚡ งานที่กำลังทำ</h3>
+        </div>
+        <div id="activeJobsList">
+            <div
+                style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; text-align: center;">
+                <p class="text-muted" style="margin: 0; font-size: 0.875rem;">ไม่มีงานที่กำลังดำเนินอยู่</p>
             </div>
         </div>
+
     </main>
 
     <script src="../js/app.js"></script>
     <script src="../js/mechanic-dashboard.js"></script>
+    <script>
+
+        // Online/offline toggle
+        let isOnline = true;
+        function toggleOnlineStatus() {
+            isOnline = !isOnline;
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const btn = document.getElementById('toggleStatusBtn');
+            if (isOnline) {
+                dot.className = 'online-dot';
+                text.textContent = 'ออนไลน์';
+                btn.innerHTML = '⏸️ หยุดรับงาน';
+                utils.showNotification('สถานะ: ออนไลน์ — พร้อมรับงาน', 'success');
+            } else {
+                dot.className = 'online-dot offline-dot';
+                text.textContent = 'พักงาน';
+                btn.innerHTML = '▶️ กลับมารับงาน';
+                utils.showNotification('สถานะ: พักงานชั่วคราว', 'info');
+            }
+        }
+    </script>
 </body>
 
 </html>

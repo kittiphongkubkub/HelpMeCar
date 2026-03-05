@@ -4,54 +4,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ค้นหาและจองช่างซ่อมรถมืออาชีพ พร้อมข้อมูลความเชี่ยวชาญ รีวิว และราคา">
-    <title>ค้นหาช่างซ่อม - HelpMeCar</title>
+    <meta name="description" content="ค้นหาและจองช่างซ่อมรถมืออาชีพ">
+    <title>ค้นหาช่าง - HelpMeCar</title>
     <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .mechanic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mechanic-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-3px);
+            border-color: var(--border-strong);
+        }
+
+        .mechanic-avatar {
+            background: linear-gradient(135deg, #1E40AF, #3B82F6);
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .mechanic-body {
+            padding: 1rem 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mechanic-name {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .mechanic-specs {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+        }
+
+        .mechanic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin: 0.5rem 0;
+        }
+
+        .mechanic-price {
+            font-weight: 800;
+            color: var(--brand-primary);
+            font-size: 1.1rem;
+        }
+
+        .mechanic-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: auto;
+            padding-top: 0.75rem;
+        }
+
+        .mechanic-actions .btn {
+            flex: 1;
+        }
+
+        /* Grid responsive */
+        #mechanicsGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="../index.html" class="navbar-brand">
-                🔧 HelpMeCar
-            </a>
-
-            <button class="navbar-toggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <a href="../index.html" class="navbar-brand">🔧 HelpMeCar</a>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
             </button>
-
-            <ul class="navbar-menu">
+            <ul class="navbar-menu" id="navMenu">
                 <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
+                <li><a href="history.html" class="navbar-link">ประวัติซ่อม</a></li>
+                <li><a href="booking.html" class="navbar-link">จองซ่อม</a></li>
+                <li class="navbar-divider"></li>
                 <li><a href="mechanics.html" class="navbar-link active">ค้นหาช่าง</a></li>
                 <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
-                <li><a href="history.html" class="navbar-link">ประวัติการซ่อม</a></li>
-                <li><a href="vehicles.html" class="navbar-link">รถของฉัน</a></li>
-                <li><a href="consultation.html" class="navbar-link">ปรึกษาผู้เชี่ยวชาญ</a></li>
-                <li>
+                <li><a href="insurance-rental.html" class="navbar-link">ประกัน/พรบ</a></li>
+                <li><a href="consultation.html" class="navbar-link">AI ปรึกษา</a></li>
+                <li class="navbar-actions">
+                    <a href="mechanic-dashboard.html" class="btn-nav-cta">🔧 โหมดช่าง</a>
                     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
-                        <span class="icon" id="themeIcon">🌙</span>
+                        <span id="themeIcon">🌙</span>
                     </button>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="container section">
-        <h1 class="mb-3">🔧 ค้นหาช่างซ่อมมืออาชีพ</h1>
+        <div style="margin-bottom: 1.5rem;">
+            <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">🔧 ค้นหาช่างซ่อม</h1>
+            <p class="text-muted" style="font-size: 0.875rem; margin: 0;">เลือกช่างที่ไว้วางใจ ดูรีวิว ราคา
+                และความเชี่ยวชาญก่อนจอง</p>
+        </div>
 
         <!-- Filter Bar -->
-        <div class="filter-bar">
+        <div class="filter-bar mb-4">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
                 <input type="text" id="searchInput" class="form-control"
-                    placeholder="ค้นหาช่างตามชื่อหรือความเชี่ยวชาญ...">
+                    placeholder="ค้นหาชื่อช่างหรือความเชี่ยวชาญ...">
             </div>
-
-            <select id="specializationFilter" class="form-control" style="flex: 0 0 200px;">
+            <select id="specializationFilter" class="form-control">
                 <option value="">ทุกความเชี่ยวชาญ</option>
                 <option value="เครื่องยนต์">เครื่องยนต์</option>
                 <option value="ระบบไฟฟ้า">ระบบไฟฟ้า</option>
@@ -60,36 +138,31 @@
                 <option value="ยาง">ยาง</option>
                 <option value="แอร์">แอร์</option>
             </select>
-
-            <select id="availabilityFilter" class="form-control" style="flex: 0 0 150px;">
-                <option value="">ทั้งหมด</option>
+            <select id="availabilityFilter" class="form-control">
+                <option value="">สถานะทั้งหมด</option>
                 <option value="available">พร้อมให้บริการ</option>
                 <option value="unavailable">ไม่ว่าง</option>
             </select>
-
-            <select id="sortBy" class="form-control" style="flex: 0 0 180px;">
+            <select id="sortBy" class="form-control">
                 <option value="rating">เรียงตามคะแนน</option>
-                <option value="experience">เรียงตามประสบการณ์</option>
-                <option value="price-low">ราคาต่ำ → สูง</option>
-                <option value="price-high">ราคาสูง → ต่ำ</option>
-                <option value="reviews">เรียงตามรีวิว</option>
+                <option value="experience">ประสบการณ์</option>
+                <option value="price-low">ราคา: ต่ำ→สูง</option>
+                <option value="price-high">ราคา: สูง→ต่ำ</option>
+                <option value="reviews">รีวิวมากสุด</option>
             </select>
         </div>
 
-        <!-- Results Count -->
-        <p class="text-muted mb-3">
+        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">
             พบ <strong id="resultsCount">0</strong> ช่าง
         </p>
 
-        <!-- Mechanics Grid -->
-        <div id="mechanicsGrid" class="grid grid-3">
-            <!-- Mechanic cards will be populated here -->
-        </div>
+        <!-- Grid -->
+        <div id="mechanicsGrid"></div>
 
-        <!-- No Results Message -->
-        <div id="noResults" class="text-center d-none" style="padding: 3rem 0;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-            <h3 class="text-muted">ไม่พบช่างที่ตรงกับเงื่อนไข</h3>
+        <!-- No results -->
+        <div id="noResults" class="d-none" style="text-align: center; padding: 3rem 0;">
+            <div style="font-size: 3rem; margin-bottom: 0.75rem;">🔍</div>
+            <h3 style="color: var(--text-muted);">ไม่พบช่างที่ตรงกับเงื่อนไข</h3>
             <p class="text-muted">ลองเปลี่ยนตัวกรองหรือคำค้นหา</p>
         </div>
     </main>
@@ -101,9 +174,7 @@
                 <h3 id="modalMechanicName">รายละเอียดช่าง</h3>
                 <button class="modal-close" onclick="modal.close('mechanicModal')">×</button>
             </div>
-            <div class="modal-body" id="modalMechanicDetails">
-                <!-- Details will be populated here -->
-            </div>
+            <div class="modal-body" id="modalMechanicDetails"></div>
             <div class="modal-footer">
                 <button class="btn btn-outline" onclick="modal.close('mechanicModal')">ปิด</button>
                 <button class="btn btn-primary" id="modalBookButton">จองช่างคนนี้</button>
@@ -111,144 +182,83 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="../js/app.js"></script>
     <script>
-        // ========================================
-        // Mechanics Page Logic
-        // ========================================
 
         let filteredMechanics = [...mockData.mechanics];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Set active nav link
             navigation.setActiveLink('mechanics.html');
-
-            // Setup modal close on outside click
             modal.setupCloseOnOutsideClick('mechanicModal');
-
-            // Initial render
             renderMechanics(filteredMechanics);
-
-            // Setup event listeners
             document.getElementById('searchInput').addEventListener('input', applyFilters);
             document.getElementById('specializationFilter').addEventListener('change', applyFilters);
             document.getElementById('availabilityFilter').addEventListener('change', applyFilters);
             document.getElementById('sortBy').addEventListener('change', applyFilters);
         });
 
-        // ========================================
-        // Apply Filters
-        // ========================================
-
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const specialization = document.getElementById('specializationFilter').value;
             const availability = document.getElementById('availabilityFilter').value;
             const sortBy = document.getElementById('sortBy').value;
-
-            // Filter
             filteredMechanics = mockData.mechanics.filter(mechanic => {
-                // Search filter
                 const matchesSearch = mechanic.name.toLowerCase().includes(searchTerm) ||
                     mechanic.specializations.some(s => s.toLowerCase().includes(searchTerm));
-
-                // Specialization filter
-                const matchesSpecialization = !specialization ||
-                    mechanic.specializations.includes(specialization);
-
-                // Availability filter
+                const matchesSpecialization = !specialization || mechanic.specializations.includes(specialization);
                 const matchesAvailability = !availability ||
                     (availability === 'available' && mechanic.available) ||
                     (availability === 'unavailable' && !mechanic.available);
-
                 return matchesSearch && matchesSpecialization && matchesAvailability;
             });
-
-            // Sort
             filteredMechanics.sort((a, b) => {
                 switch (sortBy) {
-                    case 'rating':
-                        return b.rating - a.rating;
-                    case 'experience':
-                        return b.experience - a.experience;
-                    case 'price-low':
-                        return a.startingPrice - b.startingPrice;
-                    case 'price-high':
-                        return b.startingPrice - a.startingPrice;
-                    case 'reviews':
-                        return b.reviewCount - a.reviewCount;
-                    default:
-                        return 0;
+                    case 'rating': return b.rating - a.rating;
+                    case 'experience': return b.experience - a.experience;
+                    case 'price-low': return a.startingPrice - b.startingPrice;
+                    case 'price-high': return b.startingPrice - a.startingPrice;
+                    case 'reviews': return b.reviewCount - a.reviewCount;
+                    default: return 0;
                 }
             });
-
             renderMechanics(filteredMechanics);
         }
-
-        // ========================================
-        // Render Mechanics
-        // ========================================
 
         function renderMechanics(mechanics) {
             const grid = document.getElementById('mechanicsGrid');
             const noResults = document.getElementById('noResults');
-            const resultsCount = document.getElementById('resultsCount');
-
-            resultsCount.textContent = mechanics.length;
-
+            document.getElementById('resultsCount').textContent = mechanics.length;
             if (mechanics.length === 0) {
-                grid.classList.add('d-none');
+                grid.style.display = 'none';
                 noResults.classList.remove('d-none');
                 return;
             }
-
-            grid.classList.remove('d-none');
+            grid.style.display = '';
             noResults.classList.add('d-none');
-
             grid.innerHTML = mechanics.map(mechanic => `
-        <div class="card">
-          <div class="card-body">
-            <!-- Profile Photo Placeholder -->
-            <div style="width: 100%; height: 150px; background: linear-gradient(135deg, var(--slate-blue) 0%, var(--charcoal-grey) 100%); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
-              <span style="font-size: 4rem; color: white;">👨‍🔧</span>
+        <div class="mechanic-card">
+          <div class="mechanic-avatar">👨‍🔧</div>
+          <div class="mechanic-body">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+              <div class="mechanic-name">${mechanic.name}</div>
+              ${mechanic.available
+                    ? '<span class="badge badge-success">✓ พร้อม</span>'
+                    : '<span class="badge badge-secondary">ไม่ว่าง</span>'}
             </div>
-            
-            <!-- Mechanic Info -->
-            <div class="flex-between mb-2">
-              <h4 class="mb-0">${mechanic.name}</h4>
-              ${mechanic.verified ? '<span class="badge badge-verified" title="ยืนยันตัวตนแล้ว">✓ ยืนยัน</span>' : ''}
+            <div class="mechanic-specs">
+              <span>⭐ ${mechanic.rating} (${utils.formatNumber(mechanic.reviewCount)} รีวิว)</span>
+              <span>🔨 ${mechanic.experience} ปี</span>
+              ${mechanic.verified ? '<span style="color: var(--brand-primary);">✓ ยืนยัน</span>' : ''}
             </div>
-            
-            <!-- Rating -->
-            ${utils.generateStars(mechanic.rating)}
-            <p class="text-muted" style="font-size: 0.875rem; margin-top: 0.25rem;">${utils.formatNumber(mechanic.reviewCount)} รีวิว</p>
-            
-            <!-- Experience -->
-            <div class="mb-2">
-              <span class="badge badge-info">ประสบการณ์ ${mechanic.experience} ปี</span>
-              ${mechanic.available ? '<span class="badge badge-success">พร้อมให้บริการ</span>' : '<span class="badge" style="background: var(--text-muted);">ไม่ว่าง</span>'}
+            <div class="mechanic-tags">
+              ${mechanic.specializations.map(spec => `<span class="badge badge-secondary">${spec}</span>`).join('')}
             </div>
-            
-            <!-- Specializations -->
-            <div class="mb-3">
-              <p class="text-muted mb-1" style="font-size: 0.875rem;">ความเชี่ยวชาญ:</p>
-              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                ${mechanic.specializations.map(spec =>
-                `<span class="badge badge-secondary">${spec}</span>`
-            ).join('')}
-              </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+              <span class="text-muted" style="font-size: 0.78rem;">ราคาเริ่มต้น</span>
+              <span class="mechanic-price">${utils.formatCurrency(mechanic.startingPrice)}</span>
             </div>
-            
-            <!-- Price -->
-            <div class="flex-between mb-3">
-              <span class="text-muted">ราคาเริ่มต้น</span>
-              <strong class="text-primary" style="font-size: 1.25rem;">${utils.formatCurrency(mechanic.startingPrice)}</strong>
-            </div>
-            
-            <!-- Actions -->
-            <div class="flex-between gap-2">
-              <button class="btn btn-outline btn-sm" onclick="viewMechanicDetails('${mechanic.mechanicId}')">ดูรายละเอียด</button>
+            <div class="mechanic-actions">
+              <button class="btn btn-outline btn-sm" onclick="viewMechanicDetails('${mechanic.mechanicId}')">ดูโปรไฟล์</button>
               <button class="btn btn-primary btn-sm" onclick="bookMechanic('${mechanic.mechanicId}')" ${!mechanic.available ? 'disabled' : ''}>
                 ${mechanic.available ? 'จองเลย' : 'ไม่ว่าง'}
               </button>
@@ -258,82 +268,54 @@
       `).join('');
         }
 
-        // ========================================
-        // View Mechanic Details
-        // ========================================
-
         function viewMechanicDetails(mechanicId) {
             const mechanic = mockData.mechanics.find(m => m.mechanicId === mechanicId);
             if (!mechanic) return;
-
             document.getElementById('modalMechanicName').textContent = mechanic.name;
-
-            const detailsHtml = `
-        <div class="mb-3">
-          <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--slate-blue) 0%, var(--charcoal-grey) 100%); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;">
-            <span style="font-size: 6rem; color: white;">👨‍🔧</span>
+            document.getElementById('modalMechanicDetails').innerHTML = `
+        <div style="background: linear-gradient(135deg,#1E40AF,#3B82F6); border-radius: 10px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 4rem; margin-bottom: 1rem;">👨‍🔧</div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <span class="badge badge-${mechanic.available ? 'success' : 'secondary'}">${mechanic.available ? '✓ พร้อมให้บริการ' : 'ไม่ว่างขณะนี้'}</span>
+          ${mechanic.verified ? '<span class="badge badge-primary">✓ บัญชียืนยัน</span>' : ''}
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+          <div style="background: var(--bg-subtle); border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 1.4rem; font-weight: 800;">${mechanic.rating}⭐</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${utils.formatNumber(mechanic.reviewCount)} รีวิว</div>
+          </div>
+          <div style="background: var(--bg-subtle); border-radius: 8px; padding: 0.75rem; text-align: center;">
+            <div style="font-size: 1.4rem; font-weight: 800;">${mechanic.experience} ปี</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">ประสบการณ์</div>
           </div>
         </div>
-        
-        <div class="mb-3">
-          ${utils.generateStars(mechanic.rating)}
-          <p class="text-muted mt-1">${utils.formatNumber(mechanic.reviewCount)} รีวิวจากลูกค้า</p>
-        </div>
-        
-        <div class="mb-3">
-          <strong>ประสบการณ์:</strong> ${mechanic.experience} ปี<br>
-          <strong>ราคาเริ่มต้น:</strong> ${utils.formatCurrency(mechanic.startingPrice)}<br>
-          <strong>สถานะ:</strong> ${mechanic.available ? '<span class="text-success">พร้อมให้บริการ</span>' : '<span class="text-muted">ไม่ว่าง</span>'}<br>
-          ${mechanic.verified ? '<strong>✓ บัญชีได้รับการยืนยันแล้ว</strong>' : ''}
-        </div>
-        
-        <div class="mb-3">
-          <strong>ความเชี่ยวชาญ:</strong><br>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
-            ${mechanic.specializations.map(spec =>
-                `<span class="badge badge-primary">${spec}</span>`
-            ).join('')}
+        <div class="form-group" style="margin-bottom: 0.75rem;">
+          <label class="form-label">ความเชี่ยวชาญ</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.35rem;">
+            ${mechanic.specializations.map(spec => `<span class="badge badge-primary">${spec}</span>`).join('')}
           </div>
         </div>
-        
-        <div class="mb-3">
-          <strong>ติดต่อ:</strong><br>
-          📧 ${mechanic.email}<br>
-          📱 ${mechanic.phone}
+        <div style="background: var(--bg-subtle); border-radius: 8px; padding: 0.75rem;">
+          <div style="font-size: 0.875rem;">📧 ${mechanic.email}</div>
+          <div style="font-size: 0.875rem; margin-top: 0.25rem;">📱 ${mechanic.phone}</div>
+        </div>
+        <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+          <span class="text-muted" style="font-size: 0.85rem;">ราคาเริ่มต้น</span>
+          <strong style="font-size: 1.25rem; color: var(--brand-primary);">${utils.formatCurrency(mechanic.startingPrice)}</strong>
         </div>
       `;
-
-            document.getElementById('modalMechanicDetails').innerHTML = detailsHtml;
-
-            // Setup book button
             const bookBtn = document.getElementById('modalBookButton');
             bookBtn.disabled = !mechanic.available;
-            bookBtn.textContent = mechanic.available ? 'จองช่างคนนี้' : 'ช่างไม่ว่าง';
-            bookBtn.onclick = () => {
-                modal.close('mechanicModal');
-                bookMechanic(mechanicId);
-            };
-
+            bookBtn.textContent = mechanic.available ? 'จองช่างคนนี้' : 'ไม่ว่างขณะนี้';
+            bookBtn.onclick = () => { modal.close('mechanicModal'); bookMechanic(mechanicId); };
             modal.open('mechanicModal');
         }
 
-        // ========================================
-        // Book Mechanic
-        // ========================================
-
         function bookMechanic(mechanicId) {
             const mechanic = mockData.mechanics.find(m => m.mechanicId === mechanicId);
-            if (!mechanic || !mechanic.available) {
-                utils.showNotification('ช่างท่านนี้ไม่ว่างในขณะนี้', 'error');
-                return;
-            }
-
-            // In production, redirect to booking page with mechanic pre-selected
-            if (confirm(`ต้องการจอง ${mechanic.name} หรือไม่?\nราคาเริ่มต้น: ${utils.formatCurrency(mechanic.startingPrice)}`)) {
+            if (!mechanic || !mechanic.available) { utils.showNotification('ช่างท่านนี้ไม่ว่างขณะนี้', 'error'); return; }
+            if (confirm(`ต้องการจอง ${mechanic.name}?\nราคาเริ่มต้น: ${utils.formatCurrency(mechanic.startingPrice)}`)) {
                 utils.showNotification('กำลังไปหน้าจอง...', 'success');
-                setTimeout(() => {
-                    window.location.href = `booking.html?mechanicId=${mechanicId}`;
-                }, 1000);
+                setTimeout(() => { window.location.href = `booking.html?mechanicId=${mechanicId}`; }, 800);
             }
         }
     </script>

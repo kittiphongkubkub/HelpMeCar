@@ -2185,23 +2185,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // THEN initialize app state (will load selected vehicle from localStorage)
     appState.init();
 
-    // Setup mobile menu toggle
-    const menuToggle = document.querySelector('.navbar-toggle');
-    if (menuToggle) {
-        menuToggle.addEventListener('click', navigation.toggleMenu);
-    }
-
-    // Close mobile menu when clicking a link
-    const navLinks = document.querySelectorAll('.navbar-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            const menu = document.querySelector('.navbar-menu');
-            if (menu && menu.classList.contains('active')) {
-                menu.classList.remove('active');
-            }
-        });
-    });
-
     console.log('HelpMeCar App Initialized');
     console.log('Current User:', appState.currentUser);
     console.log('Current Vehicle:', appState.currentVehicle);
@@ -2252,3 +2235,72 @@ function setTheme(theme, showNotif = false) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { mockData, appState, utils, navigation, modal };
 }
+
+// ========================================
+// GLOBAL NAVBAR INIT (mobile-friendly)
+// Runs automatically on every page that loads app.js
+// ========================================
+(function () {
+    function initNavbar() {
+        const toggle = document.getElementById('navToggle');
+        const menu = document.getElementById('navMenu');
+        if (!toggle || !menu) return;
+
+        // Create overlay dynamically so we don't need to add it to every HTML page
+        let overlay = document.getElementById('navOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'navOverlay';
+            overlay.className = 'nav-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        function openMenu() {
+            menu.classList.add('active');
+            toggle.classList.add('open');
+            overlay.classList.add('active');
+            toggle.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            menu.classList.remove('active');
+            toggle.classList.remove('open');
+            overlay.classList.remove('active');
+            toggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        // Hamburger toggle
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            menu.classList.contains('active') ? closeMenu() : openMenu();
+        });
+
+        // Close when overlay (dark background) is clicked
+        overlay.addEventListener('click', closeMenu);
+
+        // Close when any nav link clicked
+        menu.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { closeMenu(); toggle.focus(); }
+        });
+
+        // Auto-close on desktop resize
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) closeMenu();
+        });
+    }
+
+    // DOM is likely already ready since app.js loads at end of <body>
+    // but we handle both cases gracefully
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initNavbar);
+    } else {
+        initNavbar(); // DOM already ready
+    }
+})();

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ประกันรถยนต์ ต่อพรบ และบริการเช่ารถขณะรถเสีย - HelpMeCar">
+    <title>ประกัน / พรบ / เช่ารถ - HelpMeCar</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .insurance-hero {
+            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #06B6D4 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .insurance-hero::before {
+            content: '🛡️';
+            position: absolute;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 6rem;
+            opacity: 0.15;
+        }
+
+        .service-tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: var(--bg-grey);
+            padding: 0.4rem;
+            border-radius: var(--radius-md);
+        }
+
+        .service-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: calc(var(--radius-md) - 2px);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .service-tab.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-card {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            background: var(--bg-card);
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.15);
+        }
+
+        .plan-card.popular {
+            border-color: var(--primary-blue);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .plan-price {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            line-height: 1;
+        }
+
+        .plan-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.35rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: #10B981;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .feature-list li.no::before {
+            content: '✗';
+            color: #EF4444;
+        }
+
+        .rental-card {
+            background: linear-gradient(135deg, #F0FDF4 0%, #D1FAE5 100%);
+            border: 2px solid #10B981;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .rental-icon {
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .rental-price-tag {
+            background: #10B981;
+            color: white;
+            padding: 0.35rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .contact-banner {
+            background: linear-gradient(135deg, #1E3A5F, #2563EB);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            .service-tab {
+                font-size: 0.78rem;
+                padding: 0.6rem 0.5rem;
+            }
+
+            .rental-card {
+                flex-direction: column;
+            }
+        }
+
+        /* Insurance plan grid: 2 cols on medium mobile, 1 col on small */
+        @media (max-width: 700px) {
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .insurance-hero h1 {
+                font-size: 1.4rem;
+            }
+
+            /* Contact banner button full width */
+            .contact-banner a.btn {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="../index.html" class="navbar-brand">
+                🔧 HelpMeCar
+            </a>
+            <button class="navbar-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="navbar-menu" id="navMenu">
+                <li><a href="../index.html" class="navbar-link">หน้าหลัก</a></li>
+                <li><a href="mechanics.html" class="navbar-link">ค้นหาช่าง</a></li>
+                <li><a href="booking.html" class="navbar-link">จองซ่อม</a></li>
+                <li><a href="insurance-rental.html" class="navbar-link active">ประกัน / พรบ / เช่ารถ</a></li>
+                <li><a href="store.html" class="navbar-link">ร้านอะไหล่</a></li>
+                <li><a href="consultation.html" class="navbar-link">ปรึกษา AI</a></li>
+                <li>
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                        <span class="icon" id="themeIcon">🌙</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container section">
+
+        <!-- Hero -->
+        <div class="insurance-hero mb-4">
+            <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">🛡️ ประกัน / พรบ / เช่ารถ</h1>
+            <p style="opacity: 0.9; max-width: 500px;">ครบจบในที่เดียว — ทำประกัน ต่อพรบ และเช่ารถระหว่างรอซ่อม
+                ไม่ต้องออกไปไหน</p>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="service-tab-bar" id="tabBar">
+            <button class="service-tab active" id="tab-insurance" onclick="showTab('insurance')">🛡️
+                ประกันรถยนต์</button>
+            <button class="service-tab" id="tab-tax" onclick="showTab('tax')">📋 ต่อพรบ / ภาษี</button>
+            <button class="service-tab" id="tab-rental" onclick="showTab('rental')">🚗 เช่ารถ (ขณะรถเสีย)</button>
+        </div>
+
+        <!-- ===== TAB: ประกันรถยนต์ ===== -->
+        <div id="content-insurance">
+            <p class="text-muted mb-4">เปรียบเทียบแผนประกันจากบริษัทชั้นนำ เลือกความคุ้มครองที่เหมาะกับคุณ</p>
+
+            <div class="grid grid-3 mb-4">
+                <!-- Plan 1 -->
+                <div class="plan-card">
+                    <div style="font-size: 2rem; margin-bottom: 0.75rem;">🥉</div>
+                    <h3 class="mb-1">ชั้น 3</h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">คุ้มครองขั้นพื้นฐาน
+                        สำหรับผู้ขับรถระวัง</p>
+                    <div class="plan-price">฿3,500 <span>/ ปี</span></div>
+                    <ul class="feature-list">
+                        <li>ค่าเสียหายบุคคลภายนอก</li>
+                        <li>ค่ารักษาพยาบาล (บุคคลภายนอก)</li>
+                        <li class="no">ความเสียหายของรถตัวเอง</li>
+                        <li class="no">ภัยธรรมชาติ / น้ำท่วม</li>
+                    </ul>
+                    <button class="btn btn-outline btn-sm" style="width: 100%;"
+                        onclick="openInsuranceModal('ชั้น 3', '3,500')">เลือกแผนนี้</button>
+                </div>
+
+                <!-- Plan 2 (Popular) -->
+                <div class="plan-card popular">
+                    <div class="popular-badge">⭐ แนะนำ</div>
+                    <div style="font-size: 2rem; margin-bottom: 0.75rem; margin-top: 0.5rem;">🥈</div>
+                    <h3 class="mb-1">ชั้น 2+ / 2</h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">คุ้มครองครอบคลุม
+                        เหมาะกับการใช้งานทั่วไป</p>
+                    <div class="plan-price">฿8,500 <span>/ ปี</span></div>
+                    <ul class="feature-list">
+                        <li>ค่าเสียหายบุคคลภายนอก</li>
+                        <li>ค่ารักษาพยาบาล (บุคคลภายนอก)</li>
+                        <li>ความเสียหายของรถตัวเอง</li>
+                        <li class="no">ภัยธรรมชาติ / น้ำท่วม</li>
+                    </ul>
+                    <button class="btn btn-primary btn-sm" style="width: 100%;"
+                        onclick="openInsuranceModal('ชั้น 2+', '8,500')">เลือกแผนนี้</button>
+                </div>
+
+                <!-- Plan 3 -->
+                <div class="plan-card">
+                    <div style="font-size: 2rem; margin-bottom: 0.75rem;">🥇</div>
+                    <h3 class="mb-1">ชั้น 1</h3>
+                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">ความคุ้มครองสูงสุด
+                        ครอบคลุมทุกสถานการณ์</p>
+                    <div class="plan-price">฿15,000 <span>/ ปี</span></div>
+                    <ul class="feature-list">
+                        <li>ค่าเสียหายบุคคลภายนอก</li>
+                        <li>ค่ารักษาพยาบาล (บุคคลภายนอก)</li>
+                        <li>ความเสียหายของรถตัวเอง</li>
+                        <li>ภัยธรรมชาติ / น้ำท่วม</li>
+                    </ul>
+                    <button class="btn btn-outline btn-sm" style="width: 100%;"
+                        onclick="openInsuranceModal('ชั้น 1', '15,000')">เลือกแผนนี้</button>
+                </div>
+            </div>
+
+            <!-- Partner Brands -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">🏢 บริษัทประกันพาร์ทเนอร์</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-3" style="text-align: center; gap: 1rem;">
+                        <div style="padding: 1rem; background: var(--bg-grey); border-radius: var(--radius-md);">
+                            <div style="font-size: 2rem;">🏦</div>
+                            <p class="mt-1" style="font-weight: 600; font-size: 0.9rem;">ไทยประกันภัย</p>
+                            <p class="text-muted" style="font-size: 0.78rem;">ก่อตั้ง 2494</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--bg-grey); border-radius: var(--radius-md);">
+                            <div style="font-size: 2rem;">🛡️</div>
+                            <p class="mt-1" style="font-weight: 600; font-size: 0.9rem;">เมืองไทยประกันภัย</p>
+                            <p class="text-muted" style="font-size: 0.78rem;">เบี้ยเริ่มต้น 3,200 บาท</p>
+                        </div>
+                        <div style="padding: 1rem; background: var(--bg-grey); border-radius: var(--radius-md);">
+                            <div style="font-size: 2rem;">⭐</div>
+                            <p class="mt-1" style="font-weight: 600; font-size: 0.9rem;">วิริยะประกันภัย</p>
+                            <p class="text-muted" style="font-size: 0.78rem;">เชื่อถือได้กว่า 60 ปี</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB: ต่อพรบ / ภาษี ===== -->
+        <div id="content-tax" class="d-none">
+            <p class="text-muted mb-4">ต่อพรบ และชำระภาษีรถยนต์ประจำปีออนไลน์ ไม่ต้องไปกรมขนส่ง</p>
+
+            <div class="card mb-4" style="border-left: 4px solid var(--primary-blue);">
+                <div class="card-body">
+                    <h3 class="mb-2">📋 พรบ คืออะไร?</h3>
+                    <p class="text-muted">พระราชบัญญัติคุ้มครองผู้ประสบภัยจากรถ (พรบ.) เป็นประกันภัยภาคบังคับตามกฎหมาย
+                        รถยนต์ทุกคันต้องมีพรบ มิฉะนั้นจะมีความผิดทางกฎหมาย</p>
+                </div>
+            </div>
+
+            <div class="grid grid-2 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">🚗</div>
+                        <h4 class="text-center mb-2">รถยนต์นั่งส่วนบุคคล</h4>
+                        <div class="plan-price text-center mb-3">฿645.21 <span>/ ปี</span></div>
+                        <ul class="feature-list">
+                            <li>ค่ารักษาพยาบาล สูงสุด 30,000 บาท</li>
+                            <li>กรณีเสียชีวิต 300,000 บาท</li>
+                            <li>ทุพพลภาพถาวร 300,000 บาท</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 0.5rem;"
+                            onclick="openTaxModal('รถยนต์นั่งส่วนบุคคล', '645.21')">ต่อพรบ เลย</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div style="font-size: 3rem; text-align: center; margin-bottom: 1rem;">🏍️</div>
+                        <h4 class="text-center mb-2">รถจักรยานยนต์</h4>
+                        <div class="plan-price text-center mb-3">฿162.57 <span>/ ปี</span></div>
+                        <ul class="feature-list">
+                            <li>ค่ารักษาพยาบาล สูงสุด 30,000 บาท</li>
+                            <li>กรณีเสียชีวิต 300,000 บาท</li>
+                            <li>ทุพพลภาพถาวร 300,000 บาท</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" style="width: 100%; margin-top: 0.5rem;"
+                            onclick="openTaxModal('รถจักรยานยนต์', '162.57')">ต่อพรบ เลย</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ขั้นตอน -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">📌 ขั้นตอนการต่อพรบ</h3>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div
+                                style="width: 32px; height: 32px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">
+                                1</div>
+                            <div><strong>เลือกประเภทรถ</strong> — รถยนต์ รถกระบะ หรือรถจักรยานยนต์</div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div
+                                style="width: 32px; height: 32px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">
+                                2</div>
+                            <div><strong>กรอกข้อมูลรถ</strong> — ทะเบียนรถและข้อมูลเจ้าของรถ</div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div
+                                style="width: 32px; height: 32px; background: var(--primary-blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">
+                                3</div>
+                            <div><strong>ชำระเงินออนไลน์</strong> — บัตรเดบิต บัตรเครดิต หรือ QR</div>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                            <div
+                                style="width: 32px; height: 32px; background: #10B981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">
+                                ✓</div>
+                            <div><strong>รับเอกสาร</strong> — ได้รับกรมธรรม์ทางอีเมลภายใน 10 นาที</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB: เช่ารถ ===== -->
+        <div id="content-rental" class="d-none">
+            <div class="card mb-4"
+                style="background: linear-gradient(135deg, #FFF7ED, #FFEDD5); border: 2px solid #F59E0B;">
+                <div class="card-body">
+                    <h3 style="color: #B45309; margin-bottom: 0.5rem;">⚡ บริการเร่งด่วน — รถเสียขณะเดินทาง</h3>
+                    <p class="text-muted">เมื่อรถคุณเสียและต้องรอซ่อม เราจัดหารถเช่าให้คุณภายใน 1-2 ชั่วโมง
+                        เพื่อให้คุณเดินทางต่อได้ทันที</p>
+                </div>
+            </div>
+
+            <h3 class="mb-3">🚗 รถเช่าที่พร้อมให้บริการ</h3>
+
+            <!-- Rental Car 1 -->
+            <div class="rental-card">
+                <div class="rental-icon">🚗</div>
+                <div style="flex: 1;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <h4 class="mb-1">รถยนต์ขนาดเล็ก (Economy)</h4>
+                            <p class="text-muted" style="font-size: 0.85rem;">Toyota Yaris / Honda City / Mazda2</p>
+                        </div>
+                        <div class="text-right">
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #059669;">฿800</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">/ วัน</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; align-items: center;">
+                        <span class="rental-price-tag">📦 รวมประกัน</span>
+                        <span class="rental-price-tag" style="background: #3B82F6;">🛣️ ระยะทางไม่จำกัด</span>
+                        <button class="btn btn-primary btn-sm" style="margin-left: auto;"
+                            onclick="openRentalModal('Economy', '800')">จองรถนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rental Car 2 -->
+            <div class="rental-card"
+                style="background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border-color: #3B82F6;">
+                <div class="rental-icon">🚙</div>
+                <div style="flex: 1;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <h4 class="mb-1">รถยนต์ขนาดกลาง (Sedan)</h4>
+                            <p class="text-muted" style="font-size: 0.85rem;">Toyota Camry / Honda Accord / Mazda6</p>
+                        </div>
+                        <div class="text-right">
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #2563EB;">฿1,200</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">/ วัน</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; align-items: center;">
+                        <span class="rental-price-tag" style="background: #3B82F6;">📦 รวมประกัน</span>
+                        <span class="rental-price-tag" style="background: #6366F1;">🛣️ ระยะทางไม่จำกัด</span>
+                        <button class="btn btn-primary btn-sm" style="margin-left: auto;"
+                            onclick="openRentalModal('Sedan', '1,200')">จองรถนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rental Car 3 -->
+            <div class="rental-card"
+                style="background: linear-gradient(135deg, #F5F3FF, #EDE9FE); border-color: #7C3AED;">
+                <div class="rental-icon">🚐</div>
+                <div style="flex: 1;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <h4 class="mb-1">รถ SUV / MPV</h4>
+                            <p class="text-muted" style="font-size: 0.85rem;">Toyota Fortuner / Honda CR-V / Innova</p>
+                        </div>
+                        <div class="text-right">
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #7C3AED;">฿1,800</div>
+                            <div style="font-size: 0.78rem; color: var(--text-muted);">/ วัน</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; align-items: center;">
+                        <span class="rental-price-tag" style="background: #7C3AED;">📦 รวมประกัน</span>
+                        <span class="rental-price-tag" style="background: #DB2777;">🛣️ ระยะทางไม่จำกัด</span>
+                        <button class="btn btn-primary btn-sm" style="margin-left: auto;"
+                            onclick="openRentalModal('SUV/MPV', '1,800')">จองรถนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 0;">
+                        ⚠️ <strong>เงื่อนไข:</strong> ผู้เช่าต้องมีใบขับขี่บัตรที่ยังไม่หมดอายุ อายุ 21 ปีขึ้นไป มัดจำ
+                        3,000-5,000 บาท คืนเมื่อส่งรถคืน
+                        ราคาอาจเปลี่ยนแปลงตามช่วงเวลาและประเภทรถที่มีพร้อม
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call Center Banner -->
+        <div class="contact-banner mt-4">
+            <div>
+                <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">ต้องการคำปรึกษาเพิ่มเติม?</p>
+                <h3 style="margin: 0.25rem 0 0; font-size: 1.25rem;">โทรหาคอลเซ็นเตอร์ของเรา</h3>
+            </div>
+            <a href="tel:02999888" class="btn btn-xl"
+                style="background: white; color: #1E40AF; font-weight: 800; font-size: 1.1rem; padding: 0.75rem 2rem; border-radius: var(--radius-md);">
+                📞 02-999-888
+            </a>
+        </div>
+    </main>
+
+    <!-- Insurance Modal -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3 id="insuranceModalTitle">ลงทะเบียนประกัน</h3>
+                <button class="modal-close" onclick="modal.close('insuranceModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">กรุณากรอกข้อมูลรถเพื่อรับใบเสนอราคาที่แม่นยำยิ่งขึ้น</p>
+                <div class="form-group">
+                    <label class="form-label">ทะเบียนรถ</label>
+                    <input type="text" class="form-control" placeholder="เช่น กข 1234 กรุงเทพมหานคร"
+                        id="insurancePlate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ยี่ห้อรถ / รุ่น / ปี</label>
+                    <input type="text" class="form-control" placeholder="เช่น Toyota Yaris 2022" id="insuranceCar">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">เบอร์โทรศัพท์</label>
+                    <input type="tel" class="form-control" placeholder="0xx-xxx-xxxx" id="insurancePhone">
+                </div>
+                <div class="card mb-0" style="background: var(--bg-grey);">
+                    <div class="card-body" style="padding: 0.75rem;">
+                        <p style="margin: 0; font-size: 0.85rem;">แผนที่เลือก: <strong id="insurancePlanName">-</strong>
+                            | ราคาประมาณ: <strong id="insurancePlanPrice">-</strong> บาท/ปี</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="modal.close('insuranceModal')">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="submitInsurance()">📞 ขอรับใบเสนอราคา</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax/พรบ Modal -->
+    <div id="taxModal" class="modal">
+        <div class="modal-content" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3>📋 ต่อพรบ ออนไลน์</h3>
+                <button class="modal-close" onclick="modal.close('taxModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">ทะเบียนรถ</label>
+                    <input type="text" class="form-control" placeholder="เช่น กข 1234 กรุงเทพมหานคร" id="taxPlate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">จังหวัด</label>
+                    <select class="form-control" id="taxProvince">
+                        <option>กรุงเทพมหานคร</option>
+                        <option>เชียงใหม่</option>
+                        <option>ขอนแก่น</option>
+                        <option>สงขลา</option>
+                        <option>อื่น ๆ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">อีเมล (รับกรมธรรม์)</label>
+                    <input type="email" class="form-control" placeholder="your@email.com" id="taxEmail">
+                </div>
+                <div class="card mb-0"
+                    style="background: linear-gradient(135deg, #F0FDF4, #D1FAE5); border: 1px solid #10B981;">
+                    <div class="card-body" style="padding: 0.75rem;">
+                        <p style="margin: 0; font-size: 0.85rem; color: #065F46;">ประเภทรถ: <strong
+                                id="taxVehicleType">-</strong> | ค่าพรบ: <strong id="taxPrice">-</strong> บาท</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="modal.close('taxModal')">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="submitTax()">💳 ชำระเงิน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rental Modal -->
+    <div id="rentalModal" class="modal">
+        <div class="modal-content" style="max-width: 460px;">
+            <div class="modal-header">
+                <h3>🚗 จองรถเช่า</h3>
+                <button class="modal-close" onclick="modal.close('rentalModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">ประเภทรถ: <strong id="rentalType">-</strong> | ราคา: <strong
+                        id="rentalPrice">-</strong> บาท/วัน</p>
+                <div class="form-group">
+                    <label class="form-label">วันที่ต้องการรับรถ</label>
+                    <input type="date" class="form-control" id="rentalDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">จำนวนวัน</label>
+                    <input type="number" class="form-control" value="1" min="1" max="30" id="rentalDays"
+                        onchange="updateRentalTotal()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">สถานที่รับรถ</label>
+                    <input type="text" class="form-control" placeholder="ระบุที่อยู่รับรถ" id="rentalPickup">
+                </div>
+                <div class="card mb-0"
+                    style="background: linear-gradient(135deg, #F0FDF4, #D1FAE5); border: 1px solid #10B981;">
+                    <div class="card-body" style="padding: 0.75rem;">
+                        <p style="margin: 0; font-size: 0.85rem;">ยอดรวมประมาณ: <strong id="rentalTotal"
+                                style="color: #059669; font-size: 1rem;">฿0</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="modal.close('rentalModal')">ยกเลิก</button>
+                <button class="btn btn-primary" onclick="submitRental()">✅ ยืนยันจองรถ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/app.js"></script>
+    <script>
+        // Tab switching
+        function showTab(tab) {
+            ['insurance', 'tax', 'rental'].forEach(t => {
+                document.getElementById('content-' + t).classList.add('d-none');
+                document.getElementById('tab-' + t).classList.remove('active');
+            });
+            document.getElementById('content-' + tab).classList.remove('d-none');
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+
+        // Insurance Modal
+        function openInsuranceModal(plan, price) {
+            document.getElementById('insurancePlanName').textContent = plan;
+            document.getElementById('insurancePlanPrice').textContent = price;
+            modal.open('insuranceModal');
+            document.getElementById('insuranceModalTitle').textContent = 'ลงทะเบียน ประกัน' + plan;
+        }
+        function submitInsurance() {
+            utils.showNotification('ส่งคำขอเสร็จสิ้น! เจ้าหน้าที่จะติดต่อกลับภายใน 30 นาที', 'success');
+            modal.close('insuranceModal');
+        }
+
+        // Tax Modal
+        function openTaxModal(vehicleType, price) {
+            document.getElementById('taxVehicleType').textContent = vehicleType;
+            document.getElementById('taxPrice').textContent = price;
+            // Set today's date as min
+            const today = new Date().toISOString().split('T')[0];
+            modal.open('taxModal');
+        }
+        function submitTax() {
+            utils.showNotification('ต่อพรบ สำเร็จ! กรมธรรม์จะส่งไปยังอีเมลของคุณภายใน 10 นาที', 'success');
+            modal.close('taxModal');
+        }
+
+        // Rental Modal
+        let currentRentalPricePerDay = 0;
+        function openRentalModal(type, priceStr) {
+            document.getElementById('rentalType').textContent = type;
+            document.getElementById('rentalPrice').textContent = priceStr;
+            currentRentalPricePerDay = parseInt(priceStr.replace(',', ''));
+            // Set tomorrow as default date
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('rentalDate').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('rentalDate').min = tomorrow.toISOString().split('T')[0];
+            document.getElementById('rentalDays').value = 1;
+            updateRentalTotal();
+            modal.open('rentalModal');
+        }
+        function updateRentalTotal() {
+            const days = parseInt(document.getElementById('rentalDays').value) || 1;
+            const total = currentRentalPricePerDay * days;
+            document.getElementById('rentalTotal').textContent = '฿' + total.toLocaleString();
+        }
+        function submitRental() {
+            utils.showNotification('จองรถเช่าสำเร็จ! คอลเซ็นเตอร์จะยืนยันและส่งรายละเอียดภายใน 30 นาที', 'success');
+            modal.close('rentalModal');
+        }
+    </script>
+</body>
+
+</html>
