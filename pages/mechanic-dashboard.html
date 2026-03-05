@@ -107,7 +107,49 @@
 
         .info-banner p {
             color: var(--text-secondary);
-            margin: 0;
+            margin: 0.2rem 0 0;
+        }
+
+        /* Section header labels */
+        .section-label-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            border-radius: 99px;
+            padding: 0.15rem 0.65rem;
+        }
+
+        /* Emergency countdown */
+        @keyframes countdownPulse {
+
+            0%,
+            100% {
+                color: #DC2626;
+            }
+
+            50% {
+                color: #F87171;
+            }
+        }
+
+        .countdown-urgent {
+            animation: countdownPulse 0.8s ease-in-out infinite;
+        }
+
+        /* Empty state boxes */
+        .emergency-empty-box {
+            background: linear-gradient(135deg, #FFF5F5, #FEE2E2);
+            border: 1.5px solid #FECACA;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .scheduled-empty-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -162,8 +204,13 @@
         <div class="info-banner">
             <span style="font-size: 1.5rem;">📲</span>
             <div>
-                <strong>ระบบส่งงานมาหาคุณโดยอัตโนมัติ</strong>
-                <p>คุณไม่ต้องหาลูกค้าเอง — ลูกค้าเลือกคุณสำหรับงานนัดหมาย และระบบส่งงานฉุกเฉินมาตรงๆ</p>
+                <strong>ระบบส่งงานมาหาคุณโดยอัตโนมัติ — คุณไม่ต้องหาลูกค้าเอง</strong>
+                <p>
+                    📅 <strong style="color: var(--brand-primary);">งานนัดหมาย:</strong> ลูกค้าเลือกคุณมาเอง
+                    รับ-ปฏิเสธได้
+                    &nbsp;|&nbsp;
+                    🚨 <strong style="color: #DC2626;">งานฉุกเฉิน:</strong> ระบบส่งตรงมาให้ — ต้องตอบรับภายใน 2 นาที
+                </p>
             </div>
         </div>
 
@@ -187,21 +234,78 @@
             </div>
         </div>
 
-        <!-- Pending Jobs -->
+        <!-- ===== SECTION 1: EMERGENCY JOBS (ระบบส่งตรง) ===== -->
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
-            <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">🔔 งานใหม่ที่รอคุณรับ</h3>
-            <span class="badge badge-danger" id="pendingCountBadge">0</span>
+            <h3
+                style="font-size: 1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                🚨 งานฉุกเฉิน
+                <span class="section-label-tag" style="background: rgba(220,38,38,0.1); color: #DC2626;">ระบบส่งตรง —
+                    ต้องตอบรับภายใน 2 นาที</span>
+            </h3>
+            <span class="badge badge-danger" id="emergencyCountBadge">1</span>
         </div>
-        <div id="pendingJobsList" style="margin-bottom: 2rem;">
+
+        <!-- Emergency Job Card (Demo - system assigned) -->
+        <div id="demoEmergencyJob" class="job-request-card emergency">
             <div
-                style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center;">
-                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
-                <p style="font-weight: 600; margin-bottom: 0.1rem;">รองานเข้ามา...</p>
-                <p class="text-muted" style="font-size: 0.8rem; margin: 0;">ระบบจะแจ้งเตือนเมื่อมีงานใหม่</p>
+                style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem;">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                        <span class="badge badge-danger">🚨 ฉุกเฉิน</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">ระบบส่งตรง — คุณไม่ต้องรับสาย</span>
+                    </div>
+                    <h4 style="font-size: 0.95rem; margin: 0 0 0.1rem;">เครื่องยนต์ดับกะทันหัน</h4>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">ถนนวิภาวดีรังสิต กรุงเทพฯ</p>
+                </div>
+                <div style="text-align: right; flex-shrink: 0;">
+                    <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0;">ต้องตอบรับภายใน</p>
+                    <strong style="font-size: 1.4rem; color: #DC2626;" id="emergencyCountdown">2:00</strong>
+                </div>
+            </div>
+            <div class="job-meta">
+                <span>📍 2.3 กม. จากคุณ</span>
+                <span>🚗 Toyota Camry 2020</span>
+                <span>💰 ประมาณ 800–1,500 บาท</span>
+                <span>👤 คอลเซ็นเตอร์เป็นคนประสานงาน</span>
+            </div>
+            <div class="job-actions">
+                <button class="btn btn-sm" onclick="rejectEmergencyJob()"
+                    style="border: 1.5px solid #DC2626; color: #DC2626; background: transparent;">❌ ปฏิเสธ</button>
+                <button class="btn btn-sm" onclick="acceptEmergencyJob()"
+                    style="background: linear-gradient(135deg, #DC2626, #EF4444); color: white; flex: 1; font-weight: 700;">🚨
+                    รับงานฉุกเฉิน</button>
             </div>
         </div>
 
-        <!-- Active Jobs -->
+        <!-- Emergency empty state (hidden by default) -->
+        <div id="emergencyEmptyState" class="emergency-empty-box" style="display: none; margin-bottom: 2rem;">
+            <div style="font-size: 2rem; margin-bottom: 0.4rem;">✅</div>
+            <p style="font-weight: 600; color: #991B1B; margin: 0 0 0.1rem;">ไม่มีงานฉุกเฉินในขณะนี้</p>
+            <p class="text-muted" style="font-size: 0.78rem; margin: 0;">
+                ระบบจะส่งงานมาให้ทันทีเมื่อมีลูกค้าฉุกเฉินในบริเวณใกล้เคียง</p>
+        </div>
+
+        <!-- ===== SECTION 2: SCHEDULED JOBS (ลูกค้าเลือก) ===== -->
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; margin-top: 0.5rem;">
+            <h3
+                style="font-size: 1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                📅 งานนัดหมาย
+                <span class="section-label-tag"
+                    style="background: rgba(37,99,235,0.1); color: var(--brand-primary);">ลูกค้าเลือกคุณมาเอง</span>
+            </h3>
+            <span class="badge badge-primary" id="pendingCountBadge">0</span>
+        </div>
+        <div id="pendingJobsList" style="margin-bottom: 2rem;">
+            <div class="scheduled-empty-box">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⏳</div>
+                <p style="font-weight: 600; margin-bottom: 0.1rem;">รองานเข้ามา...</p>
+                <p class="text-muted" style="font-size: 0.8rem; margin: 0;">
+                    ระบบจะแจ้งเตือนเมื่อลูกค้าเลือกคุณสำหรับงานนัดหมาย</p>
+            </div>
+        </div>
+
+        <!-- ===== SECTION 3: ACTIVE JOBS ===== -->
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
             <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">⚡ งานที่กำลังทำ</h3>
         </div>
@@ -236,6 +340,68 @@
                 btn.innerHTML = '▶️ กลับมารับงาน';
                 utils.showNotification('สถานะ: พักงานชั่วคราว', 'info');
             }
+        }
+
+        // Emergency countdown timer (2 minutes)
+        let countdownSec = 120;
+        const countdownEl = document.getElementById('emergencyCountdown');
+        const countdownTimer = setInterval(() => {
+            countdownSec--;
+            if (countdownSec <= 30 && countdownEl) {
+                countdownEl.classList.add('countdown-urgent');
+            }
+            if (countdownSec <= 0) {
+                clearInterval(countdownTimer);
+                const demo = document.getElementById('demoEmergencyJob');
+                if (demo) { demo.style.opacity = '0.4'; demo.style.pointerEvents = 'none'; }
+                if (countdownEl) countdownEl.textContent = 'หมดเวลา';
+                document.getElementById('emergencyCountBadge').textContent = '0';
+                document.getElementById('emergencyEmptyState').style.display = 'block';
+                utils.showNotification('หมดเวลารับงานฉุกเฉิน — ระบบส่งงานให้ช่างคนถัดไปแล้ว', 'info');
+                return;
+            }
+            const m = Math.floor(countdownSec / 60);
+            const s = countdownSec % 60;
+            if (countdownEl) countdownEl.textContent = `${m}:${String(s).padStart(2, '0')}`;
+        }, 1000);
+
+        function acceptEmergencyJob() {
+            clearInterval(countdownTimer);
+            const demo = document.getElementById('demoEmergencyJob');
+            if (demo) demo.remove();
+            document.getElementById('emergencyEmptyState').style.display = 'block';
+            document.getElementById('emergencyCountBadge').textContent = '0';
+            document.getElementById('activeJobsList').innerHTML = `
+                <div class="job-request-card emergency">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge badge-danger">🚨 ฉุกเฉิน</span>
+                        <span class="badge badge-success">⚡ กำลังเดินทาง</span>
+                    </div>
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem;">เครื่องยนต์ดับกะทันหัน — ถนนวิภาวดี</h4>
+                    <div class="job-meta">
+                        <span>📍 2.3 กม.</span>
+                        <span>🚗 Toyota Camry 2020</span>
+                        <span>💰 800–1,500 บาท</span>
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.25rem 0 0.75rem;">
+                        📞 คอลเซ็นเตอร์กำลังแจ้งลูกค้าว่าคุณกำลังเดินทางไปหา
+                    </p>
+                    <div class="job-actions">
+                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="utils.showNotification('นำทางไปยังตำแหน่งลูกค้าแล้ว', 'info')">📍 นำทาง</button>
+                        <button class="btn btn-outline btn-sm" onclick="utils.showNotification('โทรหาคอลเซ็นเตอร์แล้ว', 'success')">📞 คอลเซ็นเตอร์</button>
+                    </div>
+                </div>
+            `;
+            utils.showNotification('รับงานฉุกเฉินสำเร็จ! คอลเซ็นเตอร์จะประสานงานกับลูกค้าให้คุณ', 'success');
+        }
+
+        function rejectEmergencyJob() {
+            clearInterval(countdownTimer);
+            const demo = document.getElementById('demoEmergencyJob');
+            if (demo) demo.remove();
+            document.getElementById('emergencyEmptyState').style.display = 'block';
+            document.getElementById('emergencyCountBadge').textContent = '0';
+            utils.showNotification('ปฏิเสธงานแล้ว — ระบบส่งงานให้ช่างคนถัดไปทันที', 'info');
         }
     </script>
 </body>

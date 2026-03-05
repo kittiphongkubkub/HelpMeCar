@@ -89,6 +89,86 @@
             background: rgba(0, 0, 0, 0.3);
         }
 
+        /* Rental suggestion banner */
+        .rental-suggest {
+            background: linear-gradient(135deg, #F0FDF4, #D1FAE5);
+            border: 1.5px solid #10B981;
+            border-radius: var(--radius-lg);
+            padding: 0.875rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+        }
+
+        .rental-suggest-icon {
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .rental-suggest a {
+            font-weight: 700;
+            color: #059669;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 0.15rem;
+        }
+
+        /* Auto-assign overlay */
+        .assign-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1.5rem;
+        }
+
+        .assign-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 2rem 2.5rem;
+            text-align: center;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .assign-spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid var(--border);
+            border-top-color: #DC2626;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .assign-step {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            min-height: 1.4rem;
+        }
+
+        .assign-mechanic-found {
+            background: linear-gradient(135deg, #F0FDF4, #D1FAE5);
+            border: 2px solid #10B981;
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-top: 1.25rem;
+            display: none;
+        }
+
         /* Step indicator */
         .step-label {
             display: flex;
@@ -172,8 +252,20 @@
         <div id="emergencyInfoBox" class="emergency-info mb-4">
             <h4>🚨 ระบบจะจัดช่างให้อัตโนมัติ</h4>
             <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;">
-                ระบบจะเลือกช่างที่อยู่ใกล้ที่สุดและส่งไปให้คุณทันที คอลเซ็นเตอร์จะติดต่อกลับภายใน 5 นาที</p>
+                ระบบจะเลือกช่างที่อยู่ใกล้ที่สุดและส่งมาหาคุณทันที — คุณไม่ต้องเลือกช่างเอง
+                คอลเซ็นเตอร์จะติดต่อกลับภายใน 5 นาที</p>
             <a href="tel:02999888" class="emergency-phone"><span>📞</span> 02-999-888</a>
+        </div>
+
+        <!-- Rental Suggestion (shown for emergency) -->
+        <div id="rentalSuggestBox" class="rental-suggest mb-4">
+            <div class="rental-suggest-icon">🚗</div>
+            <div>
+                <p style="font-weight: 700; margin: 0; font-size: 0.95rem; color: #065F46;">ต้องการรถระหว่างรอซ่อม?</p>
+                <p style="margin: 0.1rem 0 0; font-size: 0.82rem; color: var(--text-muted);">
+                    เราจัดรถเช่าให้ถึงที่ภายใน 1-2 ชั่วโมง ราคาเริ่มต้น ฿800/วัน</p>
+                <a href="insurance-rental.html#rental">🚗 ดูบริการเช่ารถฉุกเฉิน →</a>
+            </div>
         </div>
 
         <!-- Booking Form -->
@@ -445,16 +537,74 @@
             };
             mockData.jobs.push(newJob);
             localStorage.setItem('helpmecar_jobs', JSON.stringify(mockData.jobs));
-            utils.showNotification('กำลังส่งคำขอ...', 'info');
-            setTimeout(() => {
-                utils.showNotification(
-                    serviceType === 'emergency'
-                        ? `ส่งคำขอสำเร็จ (${newJob.jobId}) คอลเซ็นเตอร์จะติดต่อกลับภายใน 5 นาที`
-                        : `นัดหมายสำเร็จ (${newJob.jobId}) เราจะแจ้งเตือนก่อนถึงเวลา`,
-                    'success'
-                );
-                setTimeout(() => { window.location.href = '../index.html'; }, 2000);
-            }, 1500);
+            if (serviceType === 'emergency') {
+                showAutoAssignOverlay(newJob.jobId);
+            } else {
+                utils.showNotification('กำลังส่งคำขอ...', 'info');
+                setTimeout(() => {
+                    utils.showNotification(`นัดหมายสำเร็จ (${newJob.jobId}) เราจะแจ้งเตือนก่อนถึงเวลา`, 'success');
+                    setTimeout(() => { window.location.href = '../index.html'; }, 2000);
+                }, 1000);
+            }
+        }
+
+        // Auto-assign overlay for emergency
+        function showAutoAssignOverlay(jobId) {
+            const overlay = document.createElement('div');
+            overlay.className = 'assign-overlay';
+            const mechanics = mockData.mechanics.filter(m => m.available);
+            const assigned = mechanics[Math.floor(Math.random() * mechanics.length)];
+            overlay.innerHTML = `
+                <div class="assign-box">
+                    <div class="assign-spinner" id="assignSpinner"></div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;">🚨 แจ้งเหตุฉุกเฉิน</h3>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">รหัส: <strong>${jobId}</strong></p>
+                    <p class="assign-step" id="assignStep">กำลังค้นหาช่างใกล้ที่สุด...</p>
+                    <div class="assign-mechanic-found" id="assignResult">
+                        <p style="font-size: 0.8rem; color: #065F46; margin-bottom: 0.35rem;">✅ พบช่างแล้ว!</p>
+                        <p style="font-weight: 800; font-size: 1rem; margin: 0;">${assigned ? assigned.name : 'ช่างใกล้ที่สุด'}</p>
+                        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.15rem;">
+                            ⭐ ${assigned ? assigned.rating : '4.8'} &nbsp;|&nbsp; ETA 30-45 นาที</p>
+                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.5rem;">
+                            📞 คอลเซ็นเตอร์จะโทรยืนยันภายใน 5 นาที</p>
+                    </div>
+                    <div style="margin-top: 1rem;" id="assignActions" style="display:none;">
+                        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            🚗 ต้องการรถระหว่างรอซ่อม?
+                        </p>
+                        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="insurance-rental.html#rental" class="btn btn-outline btn-sm">🚗 จองรถเช่า</a>
+                            <a href="../index.html" class="btn btn-primary btn-sm">กลับหน้าหลัก</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            const steps = [
+                { ms: 1000, text: 'กำลังตรวจสอบช่างในบริเวณใกล้เคียง...' },
+                { ms: 2500, text: `พบช่างที่เหมาะสม — กำลังติดต่อประสานงาน...` },
+                { ms: 4000, text: null } // show result
+            ];
+            steps.forEach(({ ms, text }) => {
+                if (text) {
+                    setTimeout(() => {
+                        const el = document.getElementById('assignStep');
+                        if (el) el.textContent = text;
+                    }, ms);
+                } else {
+                    setTimeout(() => {
+                        const spinner = document.getElementById('assignSpinner');
+                        if (spinner) { spinner.style.borderTopColor = '#10B981'; }
+                        const step = document.getElementById('assignStep');
+                        if (step) step.textContent = 'จัดสรรช่างสำเร็จ!';
+                        const result = document.getElementById('assignResult');
+                        if (result) result.style.display = 'block';
+                        const actions = document.getElementById('assignActions');
+                        if (actions) actions.removeAttribute('style');
+                    }, ms);
+                }
+            });
         }
     </script>
 </body>
