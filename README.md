@@ -6,6 +6,14 @@
 
 ---
 
+## 📸 ตัวอย่างหน้าเว็บ
+
+| แดชบอร์ดผู้ใช้ | ค้นหาช่างซ่อม |
+|:-:|:-:|
+| ![Dashboard](docs/screenshot-dashboard.png) | ![Mechanics](docs/screenshot-mechanics.png) |
+
+---
+
 ## ✨ ฟีเจอร์หลัก
 
 | ฟีเจอร์ | รายละเอียด |
