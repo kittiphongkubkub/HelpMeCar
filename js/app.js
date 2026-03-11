@@ -2294,6 +2294,20 @@ if (typeof module !== 'undefined' && module.exports) {
         window.addEventListener('resize', function () {
             if (window.innerWidth > 768) closeMenu();
         });
+
+        // Navbar scroll shadow — ทำให้ดูดีขึ้นเมื่อ scroll
+        const navbar = toggle.closest('.navbar');
+        if (navbar) {
+            function updateNavbarShadow() {
+                if (window.scrollY > 10) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', updateNavbarShadow, { passive: true });
+            updateNavbarShadow(); // initial check
+        }
     }
 
     // DOM is likely already ready since app.js loads at end of <body>

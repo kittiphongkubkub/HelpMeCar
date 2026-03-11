@@ -234,7 +234,9 @@ a:hover {
    NAVBAR
    ================================================ */
 .navbar {
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -242,8 +244,16 @@ a:hover {
   height: 64px;
   display: flex;
   align-items: center;
-  box-shadow: var(--shadow-sm);
-  transition: background 0.3s, border-color 0.3s;
+  box-shadow: 0 1px 0 var(--border), 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(15, 23, 42, 0.92);
+}
+
+.navbar.scrolled {
+  box-shadow: 0 1px 0 var(--border), 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .navbar-container {
@@ -253,11 +263,11 @@ a:hover {
   padding: 0 var(--space-6);
   display: flex;
   align-items: center;
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
 .navbar-brand {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--brand-primary);
   display: flex;
@@ -266,12 +276,18 @@ a:hover {
   text-decoration: none;
   flex-shrink: 0;
   letter-spacing: -0.5px;
+  transition: all var(--transition-fast);
+}
+
+.navbar-brand:hover {
+  color: var(--brand-primary-hover);
+  transform: scale(1.02);
 }
 
 .navbar-menu {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 2px;
   list-style: none;
   flex: 1;
 }
@@ -279,12 +295,13 @@ a:hover {
 .navbar-link {
   color: var(--text-secondary);
   font-weight: 500;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  padding: 0.4rem 0.7rem;
   border-radius: var(--radius-md);
   text-decoration: none;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  position: relative;
 }
 
 .navbar-link:hover {
@@ -298,60 +315,78 @@ a:hover {
   font-weight: 600;
 }
 
+.navbar-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  background: var(--brand-primary);
+  border-radius: 2px;
+}
+
 .navbar-divider {
   width: 1px;
-  height: 24px;
+  height: 20px;
   background: var(--border);
   margin: 0 var(--space-2);
   flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .navbar-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   margin-left: auto;
   flex-shrink: 0;
 }
 
 .btn-nav-cta {
-  background: var(--brand-primary);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-accent) 100%);
   color: white;
   padding: 0.45rem 1rem;
   border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 0.82rem;
   text-decoration: none;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  white-space: nowrap;
 }
 
 .btn-nav-cta:hover {
-  background: var(--brand-primary-hover);
+  background: linear-gradient(135deg, var(--brand-primary-hover) 0%, #0284C7 100%);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
 }
 
 .theme-toggle {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
 .theme-toggle:hover {
   background: var(--bg-muted);
-  transform: rotate(20deg);
+  border-color: var(--border-strong);
+  transform: rotate(20deg) scale(1.1);
 }
 
 /* Mobile toggle */
@@ -360,19 +395,42 @@ a:hover {
   flex-direction: column;
   gap: 5px;
   background: none;
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  padding: 8px;
+  padding: 8px 10px;
   margin-left: auto;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.navbar-toggle:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-strong);
 }
 
 .navbar-toggle span {
   display: block;
-  width: 22px;
+  width: 20px;
   height: 2px;
   background: var(--text-primary);
   border-radius: 2px;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+
+/* Hamburger → X animation */
+.navbar-toggle.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar-toggle.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.navbar-toggle.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 /* Skip nav */
@@ -390,6 +448,7 @@ a:hover {
 .skip-nav:focus {
   top: 1rem;
 }
+
 
 /* ================================================
    BUTTONS
