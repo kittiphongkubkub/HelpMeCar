@@ -2242,11 +2242,12 @@ if (typeof module !== 'undefined' && module.exports) {
 // ========================================
 (function () {
     function initNavbar() {
-        const toggle = document.getElementById('navToggle');
         const menu = document.getElementById('navMenu');
-        if (!toggle || !menu) return;
+        if (!menu) return;
 
-        // Create overlay dynamically so we don't need to add it to every HTML page
+        const toggle = document.getElementById('navToggle');
+
+        // Create overlay dynamically
         let overlay = document.getElementById('navOverlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -2257,37 +2258,46 @@ if (typeof module !== 'undefined' && module.exports) {
 
         function openMenu() {
             menu.classList.add('active');
-            toggle.classList.add('open');
+            if (toggle) { toggle.classList.add('open'); toggle.setAttribute('aria-expanded', 'true'); }
             overlay.classList.add('active');
-            toggle.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeMenu() {
             menu.classList.remove('active');
-            toggle.classList.remove('open');
+            if (toggle) { toggle.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
             overlay.classList.remove('active');
-            toggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
         }
 
-        // Hamburger toggle
-        toggle.addEventListener('click', function (e) {
+        function onMenuBtnClick(e) {
+            e.preventDefault();
             e.stopPropagation();
             menu.classList.contains('active') ? closeMenu() : openMenu();
+        }
+
+        // Hamburger button (hidden on mobile but bind anyway)
+        if (toggle) toggle.addEventListener('click', onMenuBtnClick);
+
+        // Bottom nav menu button — works on EVERY page
+        document.querySelectorAll('#mobileMenuBtn, [data-menu-toggle]').forEach(function (btn) {
+            btn.removeAttribute('onclick');
+            btn.addEventListener('click', onMenuBtnClick);
         });
 
-        // Close when overlay (dark background) is clicked
+        // Close when overlay is tapped
         overlay.addEventListener('click', closeMenu);
+        overlay.addEventListener('touchend', closeMenu);
 
-        // Close when any nav link clicked
+        // Close on nav link click
         menu.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', closeMenu);
         });
 
         // Close on Escape key
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') { closeMenu(); toggle.focus(); }
+            if (e.key === 'Escape' && menu.classList.contains('active')) {
+                closeMenu();
+                if (toggle) toggle.focus();
+            }
         });
 
         // Auto-close on desktop resize
@@ -2295,26 +2305,20 @@ if (typeof module !== 'undefined' && module.exports) {
             if (window.innerWidth > 768) closeMenu();
         });
 
-        // Navbar scroll shadow — ทำให้ดูดีขึ้นเมื่อ scroll
-        const navbar = toggle.closest('.navbar');
+        // Navbar scroll shadow
+        const navbar = document.querySelector('.navbar');
         if (navbar) {
             function updateNavbarShadow() {
-                if (window.scrollY > 10) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
+                navbar.classList.toggle('scrolled', window.scrollY > 10);
             }
             window.addEventListener('scroll', updateNavbarShadow, { passive: true });
-            updateNavbarShadow(); // initial check
+            updateNavbarShadow();
         }
     }
 
-    // DOM is likely already ready since app.js loads at end of <body>
-    // but we handle both cases gracefully
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initNavbar);
     } else {
-        initNavbar(); // DOM already ready
+        initNavbar();
     }
 })();
